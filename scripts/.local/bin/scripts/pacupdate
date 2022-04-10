@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cupd=$(checkupdates | wc -l)
+#cupd="$(pacman -Qu | grep -Fcv '[ignored]')"
+#printf "<fc=#ff6c6b> <icon=updates.xpm/>123 </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
+[ "$cupd" -eq 0 ] && exit 0
+
+#printf " <fc=#ff6c6b>upd:$cupd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
+printf "<fc=#ff6c6b> <icon=updates.xpm/>$cupd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling

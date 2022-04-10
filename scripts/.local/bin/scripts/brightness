@@ -1,0 +1,4 @@
+#!/bin/bash
+
+curBrightness=$(xbacklight -get)
+echo "<icon=brightness.xpm/>${curBrightness%.*}%"

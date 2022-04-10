@@ -1,0 +1,3 @@
+#!/bin/sh
+val=$(top -bn 1 | awk '/^%Cpu/ {printf "%.f%%\n", $2+$4+$6" %"}')
+echo $val
