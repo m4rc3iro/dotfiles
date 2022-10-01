@@ -17,13 +17,14 @@ import XMonad.Actions.CycleWS
 import XMonad.Actions.SwapWorkspaces
 import XMonad.Actions.WithAll (sinkAll, killAll)
 -- Hooks modifiers
-import XMonad.Hooks.DynamicBars
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.DynamicProperty
 import XMonad.Hooks.InsertPosition -- attachaside hook, like dwm's
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, doRectFloat, doFullFloat, doCenterFloat)
 import XMonad.Hooks.SetWMName
+import XMonad.Hooks.StatusBar
+import XMonad.Hooks.StatusBar.PP
 import XMonad.Hooks.UrgencyHook
 -- Layouts modifiers
 import XMonad.Layout.Fullscreen
@@ -66,18 +67,18 @@ import qualified Data.Map as M
 myFocusFollowsMouse :: Bool
 
 myModMask     = mod4Mask
-myTerminal    = "default-terminal"
-myBrowser    = "default-browser"
+myTerminal    = "alacritty"
+myBrowser    = "chromium"
 myScreensaver = "/usr/bin/slock"
-mySelectScreenshot = "deepin-screenshot"
+mySelectScreenshot = "$TERMINAL -e flameshot gui"
 myLauncher = "dmenu_run -p 'Run: '"
 myFileExplorer = "pcmanfm"
-ranger = "$(default-terminal -t ranger -e ranger)"
-neomutt = "$(default-terminal -t neomutt -e neomutt)"
-calendar = "$(default-terminal -t calendar -e calcurse)"
-toolboxCmd = "default-terminal -e bmenu"
-systemSettingsCmd = "default-terminal -e system-settings"
-packageManagerUICmd = "default-terminal -e pacui"
+ranger = "$TERMINAL -t ranger -e ranger"
+neomutt = "$TERMINAL -t neomutt -e neomutt"
+calendar = "$TERMINAL -t calendar -e calcurse"
+toolboxCmd = "$TERMINAL -e bmenu"
+systemSettingsCmd = "$TERMINAL -e system-settings"
+packageManagerUICmd = "$TERMINAL -e pacui"
 myXmobarrc = "~/.xmonad/xmobarrc"
 myNormalBorderColor  = "#444444" --old greyish style
 myFocusedBorderColor = "#e35155" -- manjaro green color
@@ -88,12 +89,12 @@ myBorderWidth = 1
 xmobarTitleColor = "#bbbbbb"
 xmobarEmptyWSColor = "#cfa881"
 xmobarCurrentWorkspaceColor = "#8fb774"
-myKeybindingsCmd = "default-terminal -e | ~/.xmonad/xmonad_keys.sh &>/dev/null" -- '&>/dev/null' means no shell output
+myKeybindingsCmd = "$TERMINAL -e | ~/.xmonad/xmonad_keys.sh &>/dev/null" -- '&>/dev/null' means no shell output
 myWhatsApp = "whatsapp-for-linux"
 
 intern = "eDP1"
 extern = "HDMI2"
-output2acerCmd = "default-terminal -e xrandr --output " ++ intern ++ " --off --output " ++ extern ++ "--mode 1920x1080"
+output2acerCmd = "$TERMINAL -e xrandr --output " ++ intern ++ " --off --output " ++ extern ++ "--mode 1920x1080"
 output2eizoCmd = "xrandr --output " ++ intern ++ " --off --output " ++ extern ++ "--mode 2560x1440"
 
 ------------------------------------------------------------------------
@@ -103,8 +104,8 @@ output2eizoCmd = "xrandr --output " ++ intern ++ " --off --output " ++ extern ++
 -- per-workspace layout choices.
 myStartupHook :: X ()
 myStartupHook = do
-        spawnOnce "mate-power-manager"
-        spawnOnce "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+        -- spawnOnce "mate-power-manager"
+        spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
         spawnOnce "nitrogen --restore"
         setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
@@ -129,7 +130,7 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                      t = 0.6 -h
                      l = 0.6 -w
 
-        spawnRanger  = "default-terminal -t ranger-nsp -e ranger"
+        spawnRanger  = "$TERMINAL -t ranger-nsp -e ranger"
         findRanger   = title =? "ranger-nsp"
         manageRanger = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
                     where
@@ -174,13 +175,17 @@ myManageHook = composeAll [
     , className =? "SmartGit" --> viewShift "dev"
     , className =? "Pcmanfm" --> viewShift "dir"
     , title =? "ranger" --> viewShift "dir"
-    , className =? myWhatsApp --> viewShift "sms"
+    , className =? "Whatsapp-for-linux" --> viewShift "sms"
+    , className =? "whatsapp-nativefier-d40211" --> viewShift "sms"
     , className =? "TelegramDesktop" --> viewShift "sms" 
     , className =? "discord" --> viewShift "scm" 
     , className =? "twitter-nativefier-4fd9c9" --> viewShift "scm"
     , className =? "Brave-browser" --> viewShift "www"
+    , className =? "Chromium" --> viewShift "www"
     , className =? "firefox" --> viewShift "www"
     , className =? "Trello" --> viewShift "prd"
+    , className =? "notion-app" --> viewShift "prd"
+    , className =? "shortwave" --> viewShift "mus"
     -- do float the following apps
     , title =? "Gimp" --> doFloat
     , className =? "Yad" --> doCenterFloat
@@ -320,7 +325,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   --
   [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modMask, xK_Return), spawn myLauncher)
-  , ((modMask, xK_F3), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
+  , ((modMask .|. controlMask, xK_F4), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
   , ((modMask .|. shiftMask, xK_b), spawn myBrowser) -- launch default browser
   , ((modMask, xK_b), spawn "brave") -- launch default browser
   -- , ((modMask .|. shiftMask, xK_m), spawn neomutt)
@@ -333,7 +338,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. shiftMask, xK_i), spawn "subl")
   -- , ((controlMask.|. shiftMask, xK_c), spawn "clipmenu")
   -- , ((modMask .|. shiftMask, xK_u), spawn "smartgit")
-  , ((modMask .|. shiftMask, xK_n), spawn "~/.joplin/Joplin.AppImage")
+  , ((modMask .|. shiftMask, xK_n), spawn "notion-app")
   -- , ((modMask, xK_e), spawn myFileExplorer) -- pcmanfm
   , ((modMask .|. shiftMask, xK_e), spawn ranger)
   -- , ((modMask .|. controlMask, xK_m), spawn "geary")
@@ -344,7 +349,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Control key functions
   , ((0, xF86XK_AudioMute), spawn "amixer -q set Master toggle")
   , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 7.5%-")
+  -- , ((0, xF86XK_AudioLowerVolume), spawn "pactl -- set-sink-volume 2 -15%")
   , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 7.5%+")
+  -- , ((0, xF86XK_AudioRaiseVolume), spawn "pactl -- set-sink-volume 2 +15%")
   , ((0, xF86XK_AudioPrev), spawn "playerctl previous")
   , ((0, xF86XK_AudioPlay), spawn "playerctl play-pause")
   , ((0, xF86XK_AudioNext), spawn "playerctl next")
@@ -425,7 +432,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. controlMask, xK_x), spawn "shutdown -h now") -- Shutdown
   , ((modMask .|. controlMask, xK_q), spawn "~/.local/bin/scripts/exitDialog.sh") -- Power options general script
   , ((modMask .|. shiftMask, xK_q), io (exitWith ExitSuccess)) -- Quit xmonad
-  , ((modMask .|. shiftMask, xK_r), spawn "xmonad --recompile; xmonad --restart") -- Restart xmonad
+  -- , ((modMask .|. shiftMask, xK_r), spawn "xmonad --recompile; xmonad --restart") -- Restart xmonad
+  , ((modMask .|. shiftMask, xK_r), spawn "xmonad --restart") -- Restart xmonad
   , ((modMask .|. shiftMask, xK_slash), spawn myKeybindingsCmd) -- shows dialog with my keybindinds
   ] -- END_KEYS
   ++
@@ -466,9 +474,8 @@ myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
 -- Run xmonad with all the defaults we set up.
 main = do
   xmproc <- spawnPipe ("xmobar " ++ myXmobarrc)
-  xmonad $ withUrgencyHook NoUrgencyHook $ defaults {
-      logHook = dynamicLogWithPP 
-              $ namedScratchpadFilterOutWorkspacePP -- hides out namedscratchpad workspace
+  xmonad $ withUrgencyHook NoUrgencyHook $ docks $ defaults {
+      logHook = dynamicLogWithPP . filterOutWsPP [scratchpadWorkspaceTag]  -- hides out namedscratchpad workspace
               $ xmobarPP
       {
           ppOutput = hPutStrLn xmproc
@@ -485,7 +492,7 @@ main = do
       , startupHook = myStartupHook
       -- adding DynamicPropertyChange hook to allow managing apps (i.e. open them a specific workspace) 
       -- which set the WM_CLASS with delay during opening 
-      , handleEventHook = docksEventHook <+> dynamicPropertyChange "WM_CLASS" myManageHook
+      , handleEventHook =  dynamicPropertyChange "WM_CLASS" myManageHook
   }
 
 
