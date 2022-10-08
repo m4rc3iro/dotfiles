@@ -68,11 +68,11 @@ myFocusFollowsMouse :: Bool
 
 myModMask     = mod4Mask
 myTerminal    = "alacritty"
-myBrowser    = "chromium"
+myBrowser    = "firefox"
 myScreensaver = "/usr/bin/slock"
 mySelectScreenshot = "$TERMINAL -e flameshot gui"
 myLauncher = "dmenu_run -p 'Run: '"
-myFileExplorer = "pcmanfm"
+myFileExplorer = "nautilus -w"
 ranger = "$TERMINAL -t ranger -e ranger"
 neomutt = "$TERMINAL -t neomutt -e neomutt"
 calendar = "$TERMINAL -t calendar -e calcurse"
@@ -107,6 +107,7 @@ myStartupHook = do
         -- spawnOnce "mate-power-manager"
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
+        -- spawnOnce "xmodmap ~/.Xmodmap" -- natural scrolling
         spawnOnce "nitrogen --restore"
         setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
         spawnOnce "clipmenud"
@@ -174,6 +175,7 @@ myManageHook = composeAll [
     , className =? "Subl" --> viewShift "dev"
     , className =? "SmartGit" --> viewShift "dev"
     , className =? "Pcmanfm" --> viewShift "dir"
+    , className =? "Org.gnome.Nautilus" --> viewShift "dir"
     , title =? "ranger" --> viewShift "dir"
     , className =? "Whatsapp-for-linux" --> viewShift "sms"
     , className =? "whatsapp-nativefier-d40211" --> viewShift "sms"
@@ -340,7 +342,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- , ((modMask .|. shiftMask, xK_u), spawn "smartgit")
   , ((modMask .|. shiftMask, xK_n), spawn "notion-app")
   -- , ((modMask, xK_e), spawn myFileExplorer) -- pcmanfm
-  , ((modMask .|. shiftMask, xK_e), spawn ranger)
+  , ((modMask .|. shiftMask, xK_e), spawn myFileExplorer)
   -- , ((modMask .|. controlMask, xK_m), spawn "geary")
   , ((modMask .|. controlMask, xK_t), spawn toolboxCmd)
   , ((modMask .|. controlMask, xK_y), spawn systemSettingsCmd)
