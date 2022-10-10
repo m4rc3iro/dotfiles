@@ -107,7 +107,6 @@ myStartupHook = do
         -- spawnOnce "mate-power-manager"
         spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
-        -- spawnOnce "xmodmap ~/.Xmodmap" -- natural scrolling
         spawnOnce "nitrogen --restore"
         setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
         spawnOnce "clipmenud"
@@ -119,6 +118,7 @@ myStartupHook = do
 myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc 
                 , NS "ranger" spawnRanger findRanger manageRanger 
+                , NS "bitwarden" spawnBitwarden findBitwarden manageBitwarden 
                 , NS "spotify" spawnSpotify findSpotify manageSpotify 
                 , NS "blueman" spawnBlueman findBlueman manageBlueman ]
     where 
@@ -140,6 +140,15 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                         t = 0.7 -h 
                         l = 0.7 -w
         
+        spawnBitwarden  = "bitwarden-desktop" 
+        findBitwarden   = title =? "Bitwarden"
+        manageBitwarden = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
+                    where
+                        h = 0.5
+                        w = 0.5
+                        t = 0.7 -h 
+                        l = 0.7 -w
+
         spawnSpotify  = "spotify"
         findSpotify   = className =? "Spotify"
         manageSpotify = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
@@ -329,7 +338,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask, xK_Return), spawn myLauncher)
   , ((modMask .|. controlMask, xK_F4), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
   , ((modMask .|. shiftMask, xK_b), spawn myBrowser) -- launch default browser
-  , ((modMask, xK_b), spawn "brave") -- launch default browser
+  -- , ((modMask, xK_b), spawn "Bitwarden") -- launch default browser
   -- , ((modMask .|. shiftMask, xK_m), spawn neomutt)
   --  , ((modMask .|. shiftMask, xK_c), spawn calculator)
   , ((modMask .|. shiftMask, xK_c), spawn "clipmenu")
@@ -388,6 +397,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Scratchpads 
   , ((modMask, xK_c), namedScratchpadAction myScratchPads "calculator")
   , ((modMask, xK_e), namedScratchpadAction myScratchPads "ranger")
+  , ((modMask, xK_b), namedScratchpadAction myScratchPads "bitwarden")
   , ((modMask .|. shiftMask, xK_g), namedScratchpadAction myScratchPads "spotify")
   , ((modMask .|. controlMask, xK_b), namedScratchpadAction myScratchPads "blueman")
   --------------------------------------------------------------------
