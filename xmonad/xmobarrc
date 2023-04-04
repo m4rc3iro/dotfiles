@@ -1,50 +1,38 @@
 -- http://projects.haskell.org/xmobar/
 -- install xmobar with these flags: --flags="with_alsa" --flags="with_mpd" --flags="with_xft"  OR --flags="all_extensions"
 -- you can find weather location codes here: http://weather.noaa.gov/index.html
+-- Dependencies: 
+   -- otf-font-awesome 
+   -- ttf-mononoki 
+   -- ttf-ubuntu-font-family
+   -- htop
+   -- emacs
+   -- pacman (Arch Linux)
+   -- trayer
+   -- 'dtos-local-bin' (from dtos-core-repo)
 
-
-Config {
-        -- Position xmobar along the top, with a stalonetray in the top right.
-        -- Add right padding to xmobar to ensure stalonetray and xmobar don't
-        -- overlap. stalonetrayrc-single is configured for 12 icons, each 23px
-        -- wide.
-        -- right_padding = num_icons * icon_size
-        -- right_padding = 12 * 23 = 276
-        -- Example: position = TopP 0 276
-         -- position = Static { xpos = 0 , ypos = 0, width = 1680, height = 25}
-         position = TopSize L 100 30 -- width(%) + height(px)
-       -- run "fc-list -v | grep fullname" command to see list of installed xft fonts
-       -- , font    = "xft:Inconsolata:weight=bold:size=9:antialias=true:hinting=true"
-       -- , font = "xft:FreeMono:size=10:antialias=true:hinting=true"
-       , font    ="xft:Zilla Slab Medium:weight=bold:pixelsize=16:antialias=true:hinting=true,FontAwesome"
-       -- , additionalFonts = [ "xft:Zilla Slab:weight=bold:pixelsize=13:antialias=true:hinting=true"
-       --                     , "xft:Mononoki Nerd Font:pixelsize=11:antialias=true:hinting=true"
-       --                     , "xft:Mononoki Nerd Font:pixelsize=15:antialias=true:hinting=true"
-       --                     , "xft:FontAwesome:pixelsize=13"
-       --                     ]
-       , iconRoot = "/home/marc/.xmonad/xpm-icons"  -- default: "."
-       
+Config { font            = "Ubuntu Bold 11"
+       , additionalFonts = [ "Mononoki 11"
+                           , "Font Awesome 6 Free Solid 12"
+                           , "Font Awesome 6 Brands 12"
+                           ]
        , bgColor = "#282c34"
        , fgColor = "#ff6c6b"
-       , alpha = 255 -- transparency
-       , textOffset = 19
+       -- , alpha = 255 -- transparency
+       -- , textOffset = 19
        , border = BottomB
        , borderColor = "#646464"
-
-       , sepChar = "%"
-       , alignSep = "}{"
-
+       -- Position TopSize and BottomSize take 3 arguments:
+       --   an alignment parameter (L/R/C) for Left, Right or Center.
+       --   an integer for the percentage width, so 100 would be 100%.
+       --   an integer for the minimum pixel height for xmobar, so 24 would force a height of at least 24 pixels.
+       --   NOTE: The height should be the same as the trayer (system tray) height.
+       , position       = TopSize L 100 30
        , lowerOnStart = True
-       , hideOnStart = False
-       , allDesktops = True
-       , persistent = True
-
-	-- macbookpro template
-       -- , template = " <icon=haskell_20.xpm/> <fc=#666666><fn=2> [</fn></fc> %UnsafeStdinReader% <fc=#666666><fn=2>]</fn></fc> }{ <fc=#666666><fn=2> [</fn></fc>%pacupdate% <fc=#bbbbbb><action=`default-terminal -e htop`>%cpu%</action></fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %multicoretemp%</fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %memory% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %disku%</action> </fc><fc=#666666><fn=2>|</fn></fc><fc=#66aaaa> %battery% </fc><fc=#666666><fn=2>|</fn></fc><fc=#cfa881>%bright%</fc> <fc=#666666><fn=2>|</fn></fc><fc=#66aaaa><fc=#668ecc> %volume% </fc><action=`networkmenu.sh`>%wireless%</action><fc=#666666><fn=2>|</fn></fc> <fc=#e5a1a7>%crypto%</fc> <fc=#666666><fn=2>|</fn></fc> %EDSB% <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %date% </fc><fc=#666666><fn=2>|</fn></fc> <action=`setxkbmap -layout us,es -option grp:shifts_toggle`>%kbd%</action></fc><fc=#666666><fn=2> ] </fn></fc>"
-       
-	-- macpro template
-	, template = "  <icon=haskell_20.xpm/> <fc=#666666><fn=2> [</fn></fc> %UnsafeStdinReader% <fc=#666666><fn=2>]</fn></fc> }{ <fc=#666666><fn=2> [</fn></fc>%pacupdate% <fc=#bbbbbb><action=`default-terminal -e htop`>%cpu%</action></fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %multicoretemp%</fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %memory% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %disku%</action> </fc><fc=#666666><fn=2>|</fn></fc><fc=#66aaaa><fc=#668ecc> %volume% </fc><action=`networkmenu.sh`>%wireless%</action><fc=#666666><fn=2>|</fn></fc> <fc=#e5a1a7>%crypto%</fc> <fc=#666666><fn=2>|</fn></fc> %EDSB% <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %date% </fc><fc=#666666><fn=2>|</fn></fc> <action=`setxkbmap -layout us,es -option grp:shifts_toggle`>%kbd%</action></fc><fc=#666666><fn=2> ] </fn></fc>"
-       
+       , hideOnStart  = False
+       , allDesktops  = True
+       , persistent   = True
+       , iconRoot     = ".xmonad/xpm-icons/"  -- default: "."
        , commands = [
                       -- Run Date "%d %b %H:%M" "date" 400
                       Run Date "<icon=clock-icon.xpm/> %a %d, %H:%M" "date" 100
@@ -107,7 +95,7 @@ Config {
                                      , "--brightness-icon-pattern" , "<icon=brightness.xpm/>"
                                      ] 10
 
-                    , Run Com "/home/marc/.local/bin/scripts/volume" [] "volume" 8
+                    , Run Com "/home/marc/.local/bin/scripts/volume-macpro" [] "volume" 8
                     -- , Run Volume "default" "Master" ["-t", "<volumevbar>% <status>"] 10
                     
                     , Run Com "/home/marc/.local/bin/scripts/wireless" [] "wireless" 100
@@ -179,9 +167,9 @@ Config {
                     , Run Com "/home/marc/.local/bin/scripts/crypto" [] "crypto" 100
 
                     -- Prints out the left side items such as workspaces, layout, etc.
-                    -- The workspaces are 'clickable' in my configs.
                     , Run UnsafeStdinReader
-                    
                     ]
+       , sepChar = "%"
+       , alignSep = "}{"
+       , template = "  <icon=haskell_20.xpm/> <fc=#666666><fn=2> [</fn></fc> %UnsafeStdinReader% <fc=#666666><fn=2>]</fn></fc> }{ <fc=#666666><fn=2> [</fn></fc>%pacupdate% <fc=#bbbbbb><action=`default-terminal -e htop`>%cpu%</action></fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %multicoretemp%</fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %memory% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %disku%</action> </fc><fc=#666666><fn=2>|</fn></fc><fc=#66aaaa><fc=#668ecc> %volume% </fc><action=`networkmenu.sh`>%wireless%</action><fc=#666666><fn=2>|</fn></fc> <fc=#e5a1a7>%crypto%</fc> <fc=#666666><fn=2>|</fn></fc> %EDSB% <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %date% </fc><fc=#666666><fn=2>|</fn></fc> <action=`setxkbmap -layout us,es -option grp:shifts_toggle`>%kbd%</action></fc><fc=#666666><fn=2> ] </fn></fc>"
        }
-

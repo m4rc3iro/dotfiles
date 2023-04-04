@@ -66,35 +66,36 @@ import qualified Data.Map as M
 --
 myFocusFollowsMouse :: Bool
 
-myModMask     = mod4Mask
-myTerminal    = "alacritty"
-myBrowser    = "firefox"
+myModMask = mod4Mask
+myTerminal = "alacritty"
+myBrowser = "chromium"
 myScreensaver = "/usr/bin/slock"
-mySelectScreenshot = "$TERMINAL -e flameshot gui"
+mySelectScreenshot = myTerminal ++ " -e flameshot gui -p ~/Desktop "
 myLauncher = "dmenu_run -p 'Run: '"
 myFileExplorer = "nautilus -w"
-ranger = "$TERMINAL -t ranger -e ranger"
-neomutt = "$TERMINAL -t neomutt -e neomutt"
-calendar = "$TERMINAL -t calendar -e calcurse"
-toolboxCmd = "$TERMINAL -e bmenu"
-systemSettingsCmd = "$TERMINAL -e system-settings"
-packageManagerUICmd = "$TERMINAL -e pacui"
+ranger = myTerminal ++ " -t ranger -e ranger"
+neomutt = myTerminal ++ " -t neomutt -e neomutt"
+calendar = myTerminal ++ " -t calendar -e calcurse"
+toolboxCmd = myTerminal ++ " -e bmenu"
+systemSettingsCmd = myTerminal ++ " -e system-settings"
+packageManagerUICmd = myTerminal ++ " -e pacui"
 myXmobarrc = "~/.xmonad/xmobarrc"
 myNormalBorderColor  = "#444444" --old greyish style
 myFocusedBorderColor = "#e35155" -- manjaro green color
 -- myFocusedBorderColor = "#e35155" -- redish color
 -- myFocusedBorderColor = "#8fb774" -- greenish color
+xmobarUrgentWSColor = "#b74a4a"
 myFocusFollowsMouse = True
 myBorderWidth = 1
 xmobarTitleColor = "#bbbbbb"
 xmobarEmptyWSColor = "#cfa881"
 xmobarCurrentWorkspaceColor = "#8fb774"
-myKeybindingsCmd = "$TERMINAL -e | ~/.xmonad/xmonad_keys.sh &>/dev/null" -- '&>/dev/null' means no shell output
+myKeybindingsCmd = myTerminal ++ " -e | ~/.xmonad/xmonad_keys.sh &>/dev/null" -- '&>/dev/null' means no shell output
 myWhatsApp = "whatsapp-for-linux"
 
 intern = "eDP1"
 extern = "HDMI2"
-output2acerCmd = "$TERMINAL -e xrandr --output " ++ intern ++ " --off --output " ++ extern ++ "--mode 1920x1080"
+output2acerCmd = myTerminal ++ " -e xrandr --output " ++ intern ++ " --off --output " ++ extern ++ "--mode 1920x1080"
 output2eizoCmd = "xrandr --output " ++ intern ++ " --off --output " ++ extern ++ "--mode 2560x1440"
 
 ------------------------------------------------------------------------
@@ -122,16 +123,16 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                 , NS "spotify" spawnSpotify findSpotify manageSpotify 
                 , NS "blueman" spawnBlueman findBlueman manageBlueman ]
     where 
-        spawnCalc = "qalculate-gtk"
-        findCalc   = className =? "Qalculate-gtk"
+        spawnCalc = "gnome-calculator" -- "qalculate-gtk"
+        findCalc   = className =? "gnome-calculator" -- "Qalculate-gtk"
         manageCalc = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
                    where
-                     h = 0.4
-                     w = 0.4
-                     t = 0.6 -h
-                     l = 0.6 -w
+                     h = 0.2
+                     w = 0.1
+                     t = 0.5 -h
+                     l = 0.5 -w
 
-        spawnRanger  = "$TERMINAL -t ranger-nsp -e ranger"
+        spawnRanger  = myTerminal ++ " -t ranger-nsp -e ranger"
         findRanger   = title =? "ranger-nsp"
         manageRanger = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
                     where
@@ -184,7 +185,7 @@ myManageHook = composeAll [
     , className =? "Subl" --> viewShift "dev"
     , className =? "SmartGit" --> viewShift "dev"
     , className =? "Pcmanfm" --> viewShift "dir"
-    , className =? "Org.gnome.Nautilus" --> viewShift "dir"
+    , className =? "org.gnome.Nautilus" --> viewShift "dir"
     , title =? "ranger" --> viewShift "dir"
     , className =? "Whatsapp-for-linux" --> viewShift "sms"
     , className =? "whatsapp-nativefier-d40211" --> viewShift "sms"
@@ -197,6 +198,7 @@ myManageHook = composeAll [
     , className =? "Trello" --> viewShift "prd"
     , className =? "notion-app" --> viewShift "prd"
     , className =? "shortwave" --> viewShift "mus"
+    , className =? "Ledger Live" --> viewShift "prd"
     -- do float the following apps
     , title =? "Gimp" --> doFloat
     , className =? "Yad" --> doCenterFloat
@@ -336,7 +338,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   --
   [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modMask, xK_Return), spawn myLauncher)
-  , ((modMask .|. controlMask, xK_F4), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
+  , ((modMask .|. shiftMask, xK_F4), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
   , ((modMask .|. shiftMask, xK_b), spawn myBrowser) -- launch default browser
   -- , ((modMask, xK_b), spawn "Bitwarden") -- launch default browser
   -- , ((modMask .|. shiftMask, xK_m), spawn neomutt)
@@ -363,9 +365,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- , ((0, xF86XK_AudioRaiseVolume), spawn "amixer -q set Master 7.5%+")
   -- , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 7.5%-")
     -- PulseAudio based volume commands (change channel if required 1,2, etc.)
-  , ((0, xF86XK_AudioMute), spawn "pactl set-sink-mute 1 toggle")
-  , ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume 1 +15%")
-  , ((0, xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume 1 -15%")
+  , ((0, xF86XK_AudioMute), spawn "pactl set-sink-mute $(pactl list sinks short | grep RUNNING | awk '{print $1}') toggle")
+  , ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume $(pactl list sinks short | grep RUNNING | awk '{print $1}') +10%")
+  , ((0, xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume $(pactl list sinks short | grep RUNNING | awk '{print $1}') -10%")
   , ((0, xF86XK_AudioPrev), spawn "playerctl previous")
   , ((0, xF86XK_AudioPlay), spawn "playerctl play-pause")
   , ((0, xF86XK_AudioNext), spawn "playerctl next")
@@ -443,6 +445,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask, xK_equal), spawn "networkmenu.sh") -- Network Manger settings
   , ((modMask .|. controlMask, xK_l), spawn "/usr/bin/slock") -- lock screen
   , ((modMask .|. controlMask, xK_s), spawn "systemctl suspend") -- Suspend
+  , ((modMask .|. controlMask, xK_h), spawn "systemctl hibernate") -- Suspend
   , ((modMask .|. controlMask, xK_r), spawn "reboot") -- Reboot
   , ((modMask .|. controlMask, xK_x), spawn "shutdown -h now") -- Shutdown
   , ((modMask .|. controlMask, xK_q), spawn "~/.local/bin/scripts/exitDialog.sh") -- Power options general script
@@ -498,7 +501,7 @@ main = do
         -- , ppVisible = xmobarColor "#98be65" ""                -- Visible but not current workspace
         , ppHidden = xmobarColor xmobarEmptyWSColor "" . wrap "" "" . clickable -- Hidden & busy workspaces in xmobar
         , ppHiddenNoWindows = xmobarColor xmobarTitleColor "" -- Hidden workspaces (no windows)
-        , ppUrgent = xmobarColor myFocusedBorderColor "" . wrap "!" "!" . clickable  -- Urgent workspace
+        , ppUrgent = xmobarColor xmobarUrgentWSColor "" . wrap "!" "!" . clickable  -- Urgent workspace
         , ppSep = "<fc=#666666> <fn=2>] [</fn> </fc>" -- Separators in xmobar
         , ppWsSep = "<fc=#666666> <fn=2>|</fn> </fc>" --" | "
         , ppTitle = xmobarColor xmobarTitleColor "" . shorten 50 -- focused app title

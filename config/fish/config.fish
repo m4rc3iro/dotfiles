@@ -49,5 +49,18 @@ alias skll 'sudo killall'
 # wifi aliases
 alias wls 'nmcli device wifi list'
 #alias wc 'f() { nmcli device wifi connect $1 password $2 };f'
-alias wh1 'nmcli device wifi connect UPC8507569 password WW72yavuktmp'
-alias wh2 'nmcli device wifi connect UPC8507569_EXT password WW72yavuktmp'
+alias wc1 'nmcli device wifi connect UPC8507569 password WW72yavuktmp'
+alias wc2 'nmcli device wifi connect UPC8507569_EXT password WW72yavuktmp'
+alias wc3 'nmcli d wifi connect Monia password Zamek12!'
+
+# network
+alias rnms 'sudo systemctl stop NetworkManager.service && sudo systemctl start NetworkManager.service'
+
+# nordvpn
+alias nvpncf 'nordvpn connect frankfurt'
+alias nvpncb 'nordvpn connect berlin'
+alias nvpncz 'nordvpn connect zurich'
+alias nvpnccr 'nordvpn connect czech_republic'
+alias nvpnc 'nordvpn connect'
+alias nvpnd 'nordvpn disconnect'
+alias nvpns 'nordvpn status'
