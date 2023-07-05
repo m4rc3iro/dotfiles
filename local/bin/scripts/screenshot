@@ -1,0 +1,4 @@
+#!/bin/sh
+
+flameshot gui -p ~/Desktop
+#alacritty -e gnome-screenshot -a > /dev/null 2>&1 &

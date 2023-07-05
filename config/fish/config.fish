@@ -25,6 +25,7 @@ alias efc 'vim ~/.config/fish/config.fish'
 alias exc 'vim ~/.xmonad/xmonad.hs'
 alias exbc 'vim ~/.xmonad/xmobarrc'
 alias svim 'sudo vim'
+alias cbhs 'ssh runmarcm@162.241.226.34'
 
 # go to aliases
 alias ggr 'cd ~/git-repositories'

@@ -70,7 +70,7 @@ myModMask = mod4Mask
 myTerminal = "alacritty"
 myBrowser = "chromium"
 myScreensaver = "/usr/bin/slock"
-mySelectScreenshot = myTerminal ++ " -e flameshot gui -p ~/Desktop "
+mySelectScreenshot = "flameshot gui -p ~/Desktop/"
 myLauncher = "dmenu_run -p 'Run: '"
 myFileExplorer = "nautilus -w"
 ranger = myTerminal ++ " -t ranger -e ranger"
@@ -86,7 +86,7 @@ myFocusedBorderColor = "#e35155" -- manjaro green color
 -- myFocusedBorderColor = "#8fb774" -- greenish color
 xmobarUrgentWSColor = "#b74a4a"
 myFocusFollowsMouse = True
-myBorderWidth = 1
+myBorderWidth = 2
 xmobarTitleColor = "#bbbbbb"
 xmobarEmptyWSColor = "#cfa881"
 xmobarCurrentWorkspaceColor = "#8fb774"
@@ -171,7 +171,7 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
 ------------------------------------------------------------------------
 -- Workspaces
 
-myWorkspaces = ["ini","dev","sms","dir","sys","mus","scm","prd","www"]
+myWorkspaces = ["ini","dev","sms","dir","ext","$$$","scm","prd","www"]
 myWorkspaceIndices = Map.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
 clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
     where i = fromJust $ Map.lookup ws myWorkspaceIndices
@@ -198,7 +198,8 @@ myManageHook = composeAll [
     , className =? "Trello" --> viewShift "prd"
     , className =? "notion-app" --> viewShift "prd"
     , className =? "shortwave" --> viewShift "mus"
-    , className =? "Ledger Live" --> viewShift "prd"
+    , className =? "Ledger Live" --> viewShift "$$$"
+    , className =? "Atomic TweetDeck" --> viewShift "scm"
     -- do float the following apps
     , title =? "Gimp" --> doFloat
     , className =? "Yad" --> doCenterFloat
@@ -338,7 +339,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   --
   [ ((modMask .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
   , ((modMask, xK_Return), spawn myLauncher)
-  , ((modMask .|. shiftMask, xK_F4), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
+  , ((modMask .|. shiftMask .|. controlMask, xK_4), spawn mySelectScreenshot) -- Take a selective screenshot using custom command
   , ((modMask .|. shiftMask, xK_b), spawn myBrowser) -- launch default browser
   -- , ((modMask, xK_b), spawn "Bitwarden") -- launch default browser
   -- , ((modMask .|. shiftMask, xK_m), spawn neomutt)

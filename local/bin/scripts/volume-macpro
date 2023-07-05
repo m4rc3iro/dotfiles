@@ -1,0 +1,12 @@
+#!/bin/bash
+
+sink="$(pactl list sinks short | grep RUNNING | awk '{print $1}')"
+vol="$(pactl get-sink-volume $sink | awk '{print $5}')"
+status="$(pactl get-sink-mute $sink | awk '{print $2}')"
+
+if [[ $status == 'no' ]]; then
+  echo "<icon=volume.xpm/> ${vol}"
+else
+  echo mute
+fi
+

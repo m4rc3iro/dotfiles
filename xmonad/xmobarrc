@@ -164,7 +164,7 @@ Config { font            = "Ubuntu Bold 11"
                                , "--maxtwidth" , "18"
                                ] 36000
 
-                    , Run Com "/home/marc/.local/bin/scripts/crypto" [] "crypto" 100
+                    , Run Com "/home/marc/.local/bin/scripts/btcprice" [] "crypto" 100
 
                     -- Prints out the left side items such as workspaces, layout, etc.
                     , Run UnsafeStdinReader
