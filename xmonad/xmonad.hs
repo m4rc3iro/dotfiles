@@ -18,10 +18,10 @@ import XMonad.Actions.SwapWorkspaces
 import XMonad.Actions.WithAll (sinkAll, killAll)
 -- Hooks modifiers
 import XMonad.Hooks.DynamicLog
-import XMonad.Hooks.DynamicProperty
 import XMonad.Hooks.InsertPosition -- attachaside hook, like dwm's
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers (isFullscreen, doRectFloat, doFullFloat, doCenterFloat)
+import XMonad.Hooks.OnPropertyChange
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.StatusBar
 import XMonad.Hooks.StatusBar.PP
@@ -36,9 +36,8 @@ import qualified XMonad.Layout.Magnifier as Mag
 import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 -- import XMonad.Layout.NoBorders
-import XMonad.Layout.Named
 import XMonad.Layout.PerWorkspace
-import XMonad.Layout.Renamed (renamed, Rename(Replace))
+import XMonad.Layout.Renamed --(renamed, Rename(Replace))
 import XMonad.Layout.ResizableTile
 import XMonad.Layout.SimplestFloat
 import XMonad.Layout.ShowWName
@@ -191,12 +190,12 @@ myManageHook = composeAll [
     , className =? "whatsapp-nativefier-d40211" --> viewShift "sms"
     , className =? "TelegramDesktop" --> viewShift "sms" 
     , className =? "discord" --> viewShift "scm" 
-    , className =? "twitter-nativefier-4fd9c9" --> viewShift "scm"
+    , className =? "Twitter" --> viewShift "scm"
     , className =? "Brave-browser" --> viewShift "www"
     , className =? "Chromium" --> viewShift "www"
     , className =? "firefox" --> viewShift "www"
     , className =? "Trello" --> viewShift "prd"
-    , className =? "notion-app" --> viewShift "prd"
+    , className =? "notion-nativefier-46aee8" --> viewShift "prd"
     , className =? "shortwave" --> viewShift "mus"
     , className =? "Ledger Live" --> viewShift "$$$"
     , className =? "Atomic TweetDeck" --> viewShift "scm"
@@ -225,17 +224,17 @@ mySpacing :: Integer -> l a -> XMonad.Layout.LayoutModifier.ModifiedLayout Spaci
 mySpacing i = spacingRaw False (Border i i i i) True (Border i i i i) True
 mySpacingWidth = 2
 
-myTallLayout = named "||=" 
+myTallLayout = named "||="
               $ Mag.magnifierOff 
               $ mySpacing mySpacingWidth 
               $ Tall 1 (3/100) (1/2) 
 
-myMirrorTallLayout = named "LLL" 
+myMirrorTallLayout = named "LLL"
                     $ Mag.magnifierOff
                     $ mySpacing mySpacingWidth 
                     $ Mirror (Tall 1 (3/100) (3/5))
 
-myCenteredMasterLayout = named "=||=" 
+myCenteredMasterLayout = named "=||="
                         $ Mag.magnifierOff
                         $ mySpacing mySpacingWidth 
                         $ ThreeColMid 1 (3/100) (3/5)
@@ -346,13 +345,13 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   --  , ((modMask .|. shiftMask, xK_c), spawn calculator)
   , ((modMask .|. shiftMask, xK_c), spawn "clipmenu")
   , ((modMask .|. shiftMask, xK_p), spawn "trello")
-  , ((modMask .|. shiftMask, xK_w), spawn "twitter-nativefier")
+  , ((modMask .|. shiftMask, xK_w), spawn "twitter")
   , ((modMask .|. shiftMask, xK_o), spawn myWhatsApp)
   , ((modMask, xK_o), spawn "telegram-desktop")
   , ((modMask .|. shiftMask, xK_i), spawn "subl")
   -- , ((controlMask.|. shiftMask, xK_c), spawn "clipmenu")
   -- , ((modMask .|. shiftMask, xK_u), spawn "smartgit")
-  , ((modMask .|. shiftMask, xK_n), spawn "notion-app")
+  , ((modMask .|. shiftMask, xK_n), spawn "notion-app-nativefier")
   -- , ((modMask, xK_e), spawn myFileExplorer) -- pcmanfm
   , ((modMask .|. shiftMask, xK_e), spawn myFileExplorer)
   -- , ((modMask .|. controlMask, xK_m), spawn "geary")
@@ -509,9 +508,9 @@ main = do
       }
       , manageHook = manageDocks <+> insertPosition Above Newer <+> myManageHook
       , startupHook = myStartupHook
-      -- adding DynamicPropertyChange hook to allow managing apps (i.e. open them a specific workspace) 
+      -- adding onXPropertyChange hook to allow managing apps (i.e. open them a specific workspace) 
       -- which set the WM_CLASS with delay during opening 
-      , handleEventHook =  dynamicPropertyChange "WM_CLASS" myManageHook
+      , handleEventHook =  onXPropertyChange "WM_CLASS" myManageHook
   }
 
 

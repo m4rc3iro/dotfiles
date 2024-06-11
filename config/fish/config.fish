@@ -25,7 +25,9 @@ alias efc 'vim ~/.config/fish/config.fish'
 alias exc 'vim ~/.xmonad/xmonad.hs'
 alias exbc 'vim ~/.xmonad/xmobarrc'
 alias svim 'sudo vim'
+alias bctl 'bluetoothctl'
 alias cbhs 'ssh runmarcm@162.241.226.34'
+alias rwn 'sh ~/.local/bin/scripts/restart-network-macpro'
 
 # go to aliases
 alias ggr 'cd ~/git-repositories'
