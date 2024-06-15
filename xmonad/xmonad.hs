@@ -68,6 +68,7 @@ myFocusFollowsMouse :: Bool
 myModMask = mod4Mask
 myTerminal = "alacritty"
 myBrowser = "chromium"
+--myBrowser = "brave"
 myScreensaver = "/usr/bin/slock"
 mySelectScreenshot = "flameshot gui -p ~/Desktop/"
 myLauncher = "dmenu_run -p 'Run: '"
@@ -105,7 +106,7 @@ output2eizoCmd = "xrandr --output " ++ intern ++ " --off --output " ++ extern ++
 myStartupHook :: X ()
 myStartupHook = do
         -- spawnOnce "mate-power-manager"
-        spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
+        -- spawnOnce "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
         spawnOnce "nitrogen --restore"
         setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
@@ -366,8 +367,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- , ((0, xF86XK_AudioLowerVolume), spawn "amixer -q set Master 7.5%-")
     -- PulseAudio based volume commands (change channel if required 1,2, etc.)
   , ((0, xF86XK_AudioMute), spawn "pactl set-sink-mute $(pactl list sinks short | grep RUNNING | awk '{print $1}') toggle")
-  , ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume $(pactl list sinks short | grep RUNNING | awk '{print $1}') +10%")
-  , ((0, xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume $(pactl list sinks short | grep RUNNING | awk '{print $1}') -10%")
+  , ((0, xF86XK_AudioRaiseVolume), spawn "pactl set-sink-volume $(pactl list sinks short | grep RUNNING | awk '{print $1}') +20%")
+  , ((0, xF86XK_AudioLowerVolume), spawn "pactl set-sink-volume $(pactl list sinks short | grep RUNNING | awk '{print $1}') -20%")
   , ((0, xF86XK_AudioPrev), spawn "playerctl previous")
   , ((0, xF86XK_AudioPlay), spawn "playerctl play-pause")
   , ((0, xF86XK_AudioNext), spawn "playerctl next")
