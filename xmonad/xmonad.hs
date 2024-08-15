@@ -456,15 +456,15 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. shiftMask, xK_slash), spawn myKeybindingsCmd) -- shows dialog with my keybindinds
   ] -- END_KEYS
   ++
-  -- mod-[1..9], Switch to workspace N
-  -- mod-shift-[1..9], Move client to workspace N
-  [((m .|. modMask, k), windows $ f i)
-      | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
-      , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
-  ++
-  -- Swap worspaces: if you're on workspace 1, hitting mod-ctrl-5 will swap workspaces 1 and 5
-  [((modMask .|. controlMask, k), windows $ swapWithCurrent i)
-      | (i, k) <- zip myWorkspaces [xK_1 ..]]
+  -- Workspace and window interactions
+  [ ((m, k), windows $ f i)
+    | (i, k) <- zip (workspaces conf) [xK_1 .. xK_9]
+    , (f, m) <- [ (W.greedyView                   , modMask)                    -- mod+[1..9], Switch to workspace N
+                , (W.shift                        , modMask .|. controlMask)    -- mod+shift+[1..9], Send client to workspace N
+                , (liftM2 (.) W.greedyView W.shift, modMask .|. shiftMask)      -- mod+contl+[1..9], Send client to workspace N and follow
+                , (swapWithCurrent                , controlMask .|. shiftMask)  -- control+shift+[1..9], Swap with workspace N 
+                ]
+  ]
   -- ++
   -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
   -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
