@@ -122,10 +122,9 @@ add-zsh-hook -Uz precmd rehash_precmd
 
 # ls
 alias l='ls -lh'
-alias ll='ls -lah'
-alias la='ls -A'
+alias ll='ls -lAh'
+alias la='ls -Ah'
 alias lm='ls -m'
-alias lr='ls -R'
 alias lg='ls -l --group-directories-first'
 
 # git
@@ -153,7 +152,9 @@ alias psl='paru -Qs'
 
 # zsh
 alias rzc='source ~/.zshrc'
+alias rze='source ~/.zshenv'
 alias ezc='vim ~/.zshrc'
+alias eze='vim ~/.zshenv'
 
 # xmonad
 alias exc='vim ~/.config/xmonad/xmonad.hs'
