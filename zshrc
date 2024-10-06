@@ -146,7 +146,7 @@ alias psg='ps -ef | grep '
 # paru
 alias upd='paru -Syu'
 alias pi='paru -S'
-alias pr='paru -R'
+alias pr='paru -Rs'
 alias psr='paru -Ss'
 alias psl='paru -Qs'
 
@@ -168,7 +168,7 @@ alias gpics="cd ~/Pictures"
 alias gdesk="cd ~/Desktop"
 alias gdowns="cd ~/Downloads"
 alias gvids="cd ~/Videos"
-alias gxh='cd ~/.xmonad'
+alias gxh='cd ~/.config/xmonad'
 alias gdwm='cd ~/repositories/suckless/dwm/'
 alias gdwmc='cd ~/.config/dwm/'
 alias glc='cd ~/.config'
@@ -178,3 +178,7 @@ alias glbs='cd ~/.local/bin/scripts/'
 alias vim='nvim'
 alias rpf='source ~/.profile'
 alias rpcc='sudo killall picom; picom &'
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)

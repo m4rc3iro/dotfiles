@@ -1,0 +1,25 @@
+/* XPM */
+static char * calendar_clock_icon_20_xpm[] = {
+"20 16 5 1",
+"   c None",
+"w c #707880",
+"g c #8c9440",
+"y c #8c9440",
+"r c #a54242",
+"                    ",
+"                    ",
+"      wwwwwwww      ",
+"     ww      ww     ",
+"    ww   g    ww    ",
+"   ww    g     yy   ",
+"   w     g      y   ",
+"   w     g      y   ",
+"   w      yyy   y   ",
+"   w            y   ",
+"   ww          yy   ",
+"    ww        yy    ",
+"     ww      yy     ",
+"      yyyyyyyy      ",
+"                    ",
+"                    "
+};
