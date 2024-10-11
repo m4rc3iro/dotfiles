@@ -71,7 +71,7 @@ myWebBrowser = "thorium-browser"
 --myWebBrowser = "brave"
 myScreensaver = "/usr/bin/slock"
 mySelectScreenshot = "flameshot gui -p ~/Desktop/"
-myLauncher = "rofi -show drun" -- "dmenu_run -p 'Run: '"
+myLauncher = "rofi -show run" -- "dmenu_run -p 'Run: '"
 myFileExplorer = "nautilus -w"
 ranger = myTerminal ++ " -t ranger -e ranger"
 neomutt = myTerminal ++ " -t neomutt -e neomutt"
@@ -498,11 +498,11 @@ main = do
               $ xmobarPP
       {
           ppOutput = hPutStrLn xmproc
-        , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor "" . wrap "<" ">" -- Current workspace in xmobar
+        , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor "" . wrap "" "" -- Current workspace in xmobar
         -- , ppVisible = xmobarColor "#98be65" ""                -- Visible but not current workspace
         , ppHidden = xmobarColor xmobarEmptyWSColor "" . wrap "" "" . clickable -- Hidden & busy workspaces in xmobar
         , ppHiddenNoWindows = xmobarColor xmobarTitleColor "" -- Hidden workspaces (no windows)
-        , ppUrgent = xmobarColor xmobarUrgentWSColor "" . wrap "!" "!" . clickable  -- Urgent workspace
+        , ppUrgent = xmobarColor xmobarUrgentWSColor "" . wrap "" "" . clickable  -- Urgent workspace
         , ppSep = "<fc=#666666> <fn=2>] [</fn> </fc>" -- Separators in xmobar
         , ppWsSep = "<fc=#666666> <fn=2>|</fn> </fc>" --" | "
         , ppTitle = xmobarColor xmobarTitleColor "" . shorten 150 -- focused app title

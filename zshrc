@@ -172,7 +172,13 @@ alias gxh='cd ~/.config/xmonad'
 alias gdwm='cd ~/repositories/suckless/dwm/'
 alias gdwmc='cd ~/.config/dwm/'
 alias glc='cd ~/.config'
+alias gdot='cd ~/.dotfiles'
 alias glbs='cd ~/.local/bin/scripts/'
+alias gwre='cd ~/repositories/world-running-events'
+alias gwref='cd ~/repositories/world-running-events/frontend'
+alias gwreb='cd ~/repositories/world-running-events/backend'
+alias gnvimh='cd ~/.config/nvim/lua/mae'
+alias gnvimp='cd ~/.config/nvim/lua/mae/plugins'
 
 # other
 alias vim='nvim'

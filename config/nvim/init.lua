@@ -1,3 +1,3 @@
-require("mae.settings")
-require("mae.maps")
-require("mae.lazy")
+require("config.settings")
+require("config.keymaps")
+require("config.lazy")
