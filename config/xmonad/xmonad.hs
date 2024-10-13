@@ -71,7 +71,7 @@ myWebBrowser = "thorium-browser"
 --myWebBrowser = "brave"
 myScreensaver = "/usr/bin/slock"
 mySelectScreenshot = "flameshot gui -p ~/Desktop/"
-myLauncher = "rofi -show run" -- "dmenu_run -p 'Run: '"
+myLauncher = "rofi -show drun" -- "dmenu_run -p 'Run: '"
 myFileExplorer = "nautilus -w"
 ranger = myTerminal ++ " -t ranger -e ranger"
 neomutt = myTerminal ++ " -t neomutt -e neomutt"
@@ -171,7 +171,8 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
 ------------------------------------------------------------------------
 -- Workspaces
 
-myWorkspaces = ["ini","dev","sms","dir","ext","$$$","scm","prd","www"]
+--myWorkspaces = ["ini","dev","sms","dir","ext","$$$","scm","prd","www"]
+myWorkspaces = ["1","2","3","4","5","6","7","8","9"]
 myWorkspaceIndices = Map.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
 clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
     where i = fromJust $ Map.lookup ws myWorkspaceIndices
@@ -498,7 +499,7 @@ main = do
               $ xmobarPP
       {
           ppOutput = hPutStrLn xmproc
-        , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor "" . wrap "" "" -- Current workspace in xmobar
+        , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor "" . wrap "_" "_" -- Current workspace in xmobar
         -- , ppVisible = xmobarColor "#98be65" ""                -- Visible but not current workspace
         , ppHidden = xmobarColor xmobarEmptyWSColor "" . wrap "" "" . clickable -- Hidden & busy workspaces in xmobar
         , ppHiddenNoWindows = xmobarColor xmobarTitleColor "" -- Hidden workspaces (no windows)
