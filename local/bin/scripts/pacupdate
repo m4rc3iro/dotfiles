@@ -3,4 +3,6 @@ pacUpd="$(pacman -Qu | grep -Fcv '[ignored]')"
 aurUpd="$(paru -Qu | grep -Fcv '[ignored]')"
 upd=$(($pacUpd + $aurUpd))
 [ $upd -eq 0 ] && exit 0
-printf "<fc=#b74a4a> <icon=updates.xpm/> $upd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
+#printf "<fc=#b74a4a> <icon=updates.xpm/> $upd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
+#printf "<fc=#b74a4a><icon=workspaces/urgent/workspace_1.xpm/>$upd</fc> <fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
+printf "<fc=#b74a4a> +$upd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
