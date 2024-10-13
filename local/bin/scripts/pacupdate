@@ -1,6 +1,6 @@
 #!/bin/bash
-
-#cupd=$(checkupdates | wc -l)
-cupd="$(paru -Qu | grep -Fcv '[ignored]')"
-[ $cupd -eq 0 ] && exit 0
-printf "<fc=#b74a4a> <icon=updates.xpm/> $cupd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
+pacUpd="$(pacman -Qu | grep -Fcv '[ignored]')"
+aurUpd="$(paru -Qu | grep -Fcv '[ignored]')"
+upd=$(($pacUpd + $aurUpd))
+[ $upd -eq 0 ] && exit 0
+printf "<fc=#b74a4a> <icon=updates.xpm/> $upd </fc><fc=#666666><fn=2>|</fn></fc>" # xmobar specific styling
