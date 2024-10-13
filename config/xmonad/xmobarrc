@@ -108,8 +108,13 @@ Config { font            = "Ubuntu Bold 11"
                                      , "--brightness-icon-pattern" , "<icon=brightness.xpm/>"
                                      ] 10
 
-                    , Run Com "/home/mae/.local/bin/scripts/volume-macpro" [] "volume" 8
-                    -- , Run Volume "default" "Master" ["-t", "<volumevbar>% <status>"] 10
+                    --, Run Com "/home/mae/.local/bin/scripts/volume-macpro" [] "volume" 8
+                    , Run Volume "default" "Master" ["-t", "<volume>% <status>"
+                                                    , "--"
+                                                    , "-O", "--on"
+                                                    , "-C", "#66aaaa"
+                                                    , "-o", "--off"
+                                                    , "-c", "#66aaaa" ] 10
                     
                     , Run Com "/home/mae/.local/bin/scripts/wireless" [] "wireless" 100
                     -- , Run Wireless "wlan0" [ "-t", "<essid>" ] 10
@@ -184,5 +189,5 @@ Config { font            = "Ubuntu Bold 11"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "  <icon=haskell_20.xpm/> <fc=#666666><fn=2> [</fn></fc> %UnsafeStdinReader% <fc=#666666><fn=2>]</fn></fc> }{ <fc=#666666><fn=2> [</fn></fc>%pacupdate%<fc=#668ecc><action=`networkmenu.sh`>%dynnetwork% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %cpu%</action></fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %memory% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %disku%</action> <fc=#666666><fn=2>|</fn></fc><fc=#66aaaa> %volume% </fc><fc=#666666><fn=2>|</fn></fc> <fc=#e5a1a7>%crypto%</fc> <fc=#666666><fn=2>|</fn></fc> %EDSB% <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %date% </fc><fc=#666666><fn=2>|</fn></fc> <action=`setxkbmap -layout us,es -option grp:shifts_toggle`>%kbd%</action></fc><fc=#666666><fn=2> ] </fn></fc>"
+       , template = "  <icon=haskell_20.xpm/> <fc=#666666><fn=2> [</fn></fc> %UnsafeStdinReader% <fc=#666666><fn=2>]</fn></fc> }{ <fc=#666666><fn=2> [</fn></fc>%pacupdate%<fc=#668ecc><action=`networkmenu.sh`> %dynnetwork% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %cpu%</action></fc> <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %memory% </action></fc><fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb><action=`default-terminal -e htop`> %disku%</action> <fc=#666666><fn=2>|</fn></fc><fc=#66aaaa> %default:Master% </fc><fc=#666666><fn=2>|</fn></fc> <fc=#e5a1a7>%crypto%</fc> <fc=#666666><fn=2>|</fn></fc> %EDSB% <fc=#666666><fn=2>|</fn></fc><fc=#bbbbbb> %date% </fc><fc=#666666><fn=2>|</fn></fc> <action=`setxkbmap -layout us,es -option grp:shifts_toggle`>%kbd%</action></fc><fc=#666666><fn=2> ] </fn></fc>"
        }
