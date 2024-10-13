@@ -177,14 +177,15 @@ alias glbs='cd ~/.local/bin/scripts/'
 alias gwre='cd ~/repositories/world-running-events'
 alias gwref='cd ~/repositories/world-running-events/frontend'
 alias gwreb='cd ~/repositories/world-running-events/backend'
-alias gnvimh='cd ~/.config/nvim/lua/mae'
-alias gnvimp='cd ~/.config/nvim/lua/mae/plugins'
+alias gnvimh='cd ~/.config/nvim/lua'
+alias gnvimp='cd ~/.config/nvim/lua/plugins'
 
 # other
 alias vim='nvim'
 alias rpf='source ~/.profile'
 alias rpcc='sudo killall picom; picom &'
-
+alias venva='source .venv/bin/activate'
+alias rnetman='sudo systemctl restart NetworkManager'
 
 # Load Angular CLI autocompletion.
 source <(ng completion script)
