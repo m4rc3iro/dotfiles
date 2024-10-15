@@ -32,3 +32,9 @@ map("n", "<C-Right>", "<C-w><")
 map("n", "<C-Left>", "<C-w>>")
 map("n", "<C-Up>", "<C-w>+")
 map("n", "<C-Down>", "<C-w>-")
+
+-- Editor
+map("n", "<A-j>", "<CMD>m+1<CR>") -- move line down
+map("n", "<A-k>", "<CMD>m-2<CR>") -- move line up
+map("v", "<A-j>", "<CMD>m+1<CR>") -- move line down visual mode
+map("v", "<A-k>", "<CMD>m-2<CR>") -- move line up visual mode

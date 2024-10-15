@@ -38,7 +38,6 @@ return {
 			}),
 			sources = cmp.config.sources({
 				{ name = "nvim_lsp" },
-				{ name = "luasnip" },
 				{ name = "buffer" },
 				{ name = "path" },
 			}),
@@ -48,5 +47,7 @@ return {
       set completeopt=menuone,noinsert,noselect
       highlight! default link CmpItemKind CmpItemMenuDefault
     ]])
+
+    --  add loading of custom snippets https://www.youtube.com/watch?v=22mrSjknDHI (min 3.02)
 	end,
 }
