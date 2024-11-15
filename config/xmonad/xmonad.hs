@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------
 -- Imports
 import Control.Monad (liftM2)
-import Data.Ratio
+
 import Data.Maybe (fromJust, isJust)
 import qualified Data.Map as M
 import qualified Data.Map.Strict as Map
@@ -123,12 +123,12 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                 , NS "spotify" spawnSpotify findSpotify manageSpotify 
                 , NS "blueman" spawnBlueman findBlueman manageBlueman ]
     where 
-        spawnCalc = "gnome-calculator" -- "qalculate-gtk"
-        findCalc   = className =? "gnome-calculator" -- "Qalculate-gtk"
+        spawnCalc = "galculator" -- "qalculate-gtk"
+        findCalc   = className =? "Galculator" -- "Qalculate-gtk"
         manageCalc = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
                    where
                      h = 0.2
-                     w = 0.1
+                     w = 0.2
                      t = 0.5 -h
                      l = 0.5 -w
 
@@ -203,9 +203,12 @@ myManageHook = composeAll [
     , className =? "Atomic TweetDeck" --> viewShift "scm"
     -- do float the following apps
     , title =? "Gimp" --> doFloat
+    , title =? "File Operation Progress" --> doFloat
     , className =? "Yad" --> doCenterFloat
+    , className =? "TelegramDesktop" --> doFloat
     , className =? "VirtualBox" --> doFloat
-    -- , className =? "Gnome-calculator" --> doRectFloat (W.RationalRect 1 1 (0.75 -0.5) (0.70 -0.4))
+    , className =? "Xfce-polkit" --> doCenterFloat
+    , title =? "Bitwarden" --> doCenterFloat
     , isFullscreen --> (doF W.focusDown <+> doFullFloat)
     ] <+> namedScratchpadManageHook myScratchPads
   where viewShift = doF . liftM2 (.) W.greedyView W.shift
@@ -499,7 +502,7 @@ main = do
               $ xmobarPP
       {
           ppOutput = hPutStrLn xmproc
-        , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor "" . wrap "_" "_" -- Current workspace in xmobar
+        , ppCurrent = xmobarColor xmobarCurrentWorkspaceColor "" . wrap "@ " "" -- Current workspace in xmobar
         -- , ppVisible = xmobarColor "#98be65" ""                -- Visible but not current workspace
         , ppHidden = xmobarColor xmobarEmptyWSColor "" . wrap "" "" . clickable -- Hidden & busy workspaces in xmobar
         , ppHiddenNoWindows = xmobarColor xmobarTitleColor "" -- Hidden workspaces (no windows)
