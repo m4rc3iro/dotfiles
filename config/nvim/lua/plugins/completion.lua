@@ -48,6 +48,6 @@ return {
       highlight! default link CmpItemKind CmpItemMenuDefault
     ]])
 
-    --  add loading of custom snippets https://www.youtube.com/watch?v=22mrSjknDHI (min 3.02)
+		--  add loading of custom snippets https://www.youtube.com/watch?v=22mrSjknDHI (min 3.02)
 	end,
 }
