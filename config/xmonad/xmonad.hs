@@ -109,6 +109,7 @@ myStartupHook = do
         spawnOnce "/usr/lib/xfce-polkit/xfce-polkit"
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
         spawnOnce "nitrogen --restore"
+        spawnOnce "thunar --daemon"
         setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
         spawnOnce "clipmenud"
         spawnOnce "picom"
