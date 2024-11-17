@@ -111,7 +111,8 @@ myStartupHook = do
         spawnOnce "nitrogen --restore"
         spawnOnce "thunar --daemon"
         setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
-        spawnOnce "clipmenud"
+--        spawnOnce "clipmenud"
+        spawnOnce "/usr/bin/greenclip daemon"
         spawnOnce "picom"
         spawnOnce "redshift"
         setWMName "LG3D" -- fixes rendering issues with Java based applications
@@ -348,8 +349,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. shiftMask, xK_b), spawn myWebBrowser) -- launch default browser
   -- , ((modMask, xK_b), spawn "Bitwarden") -- launch default browser
   -- , ((modMask .|. shiftMask, xK_m), spawn neomutt)
-  --  , ((modMask .|. shiftMask, xK_c), spawn calculator)
-  , ((modMask .|. shiftMask, xK_c), spawn "clipmenu")
+  , ((modMask .|. shiftMask, xK_c), spawn "rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
   , ((modMask .|. shiftMask, xK_p), spawn "trello")
   , ((modMask .|. shiftMask, xK_w), spawn "twitter")
   , ((modMask .|. shiftMask, xK_o), spawn myWhatsApp)

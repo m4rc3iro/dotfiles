@@ -1,7 +1,7 @@
 vim.g.mapleader = " "
 
 local function map(mode, lhs, rhs)
-    vim.keymap.set(mode, lhs, rhs, { silent = true })
+	vim.keymap.set(mode, lhs, rhs, { silent = true })
 end
 
 -- Save
@@ -38,3 +38,5 @@ map("n", "<A-j>", "<CMD>m+1<CR>") -- move line down
 map("n", "<A-k>", "<CMD>m-2<CR>") -- move line up
 map("v", "<A-j>", "<CMD>m+1<CR>") -- move line down visual mode
 map("v", "<A-k>", "<CMD>m-2<CR>") -- move line up visual mode
+map("n", "<C-j>", "10j") -- jump cursor down
+map("n", "<C-k>", "10k") -- jump cursor up
