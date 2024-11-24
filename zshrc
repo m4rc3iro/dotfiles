@@ -186,6 +186,12 @@ alias rpf='source ~/.profile'
 alias rpcc='sudo killall picom; picom &'
 alias venva='source .venv/bin/activate'
 alias rnetman='sudo systemctl restart NetworkManager'
+alias email='neomutt'
+
+# himalaya email client
+alias h='himalaya'
+alias hr='himalaya read'
+alias hd='himalaya delete'
 
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+#source <(ng completion script)

@@ -72,7 +72,7 @@ myWebBrowser = "thorium-browser"
 myScreensaver = "/usr/bin/slock"
 mySelectScreenshot = "flameshot gui -p ~/Desktop/"
 myLauncher = "rofi -show drun" -- "dmenu_run -p 'Run: '"
-myFileExplorer = "nautilus -w"
+myFileExplorer = "thunar"
 ranger = myTerminal ++ " -t ranger -e ranger"
 neomutt = myTerminal ++ " -t neomutt -e neomutt"
 calendar = myTerminal ++ " -t calendar -e calcurse"
@@ -110,12 +110,13 @@ myStartupHook = do
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
         spawnOnce "nitrogen --restore"
         spawnOnce "thunar --daemon"
-        setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
---        spawnOnce "clipmenud"
+        spawnOnce "rclone mount obsidian-m4rc3iroGdrive: ~/obsidian" -- requires rclone to be installed
+        spawnOnce "rclone mount jobHunting-m4rc3iroGdrive: ~/jobHunting" -- requires rclone to be installed
         spawnOnce "/usr/bin/greenclip daemon"
         spawnOnce "picom"
         spawnOnce "redshift"
         setWMName "LG3D" -- fixes rendering issues with Java based applications
+        setDefaultCursor xC_left_ptr -- sets default cursor theme which was not applied on startup
 
 
 myScratchPads :: [NamedScratchpad]
@@ -358,7 +359,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- , ((controlMask.|. shiftMask, xK_c), spawn "clipmenu")
   -- , ((modMask .|. shiftMask, xK_u), spawn "smartgit")
   , ((modMask .|. shiftMask, xK_n), spawn "notion-app-nativefier")
-  -- , ((modMask, xK_e), spawn myFileExplorer) -- pcmanfm
   , ((modMask .|. shiftMask, xK_e), spawn myFileExplorer)
   -- , ((modMask .|. controlMask, xK_m), spawn "geary")
   , ((modMask .|. controlMask, xK_t), spawn toolboxCmd)
