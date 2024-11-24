@@ -5,21 +5,24 @@ local function map(mode, lhs, rhs)
 end
 
 -- Save
-map("n", "<leader>w", "<CMD>update<CR>")
+map("n", "<leader>s", "<CMD>update<CR>")
 
 -- Quit
 map("n", "<leader>q", "<CMD>q<CR>")
 
 -- Exit insert mode
-map("i", "jk", "<ESC>")
+map("i", "jj", "<ESC>")
 
 -- NeoTree
 map("n", "<leader>e", "<CMD>Neotree toggle<CR>")
 map("n", "<leader>r", "<CMD>Neotree focus<CR>")
 
+-- minimap
+map("n", "<leader>m", "<CMD>MinimapToggle<CR>")
+
 -- New Windows
-map("n", "<leader>o", "<CMD>vsplit<CR>")
-map("n", "<leader>p", "<CMD>split<CR>")
+map("n", "<leader>d", "<CMD>vsplit<CR>")
+map("n", "<leader><C-d>", "<CMD>split<CR>")
 
 -- Window Navigation
 map("n", "<C-h>", "<C-w>h")
@@ -34,9 +37,5 @@ map("n", "<C-Up>", "<C-w>+")
 map("n", "<C-Down>", "<C-w>-")
 
 -- Editor
-map("n", "<A-j>", "<CMD>m+1<CR>") -- move line down
-map("n", "<A-k>", "<CMD>m-2<CR>") -- move line up
-map("v", "<A-j>", "<CMD>m+1<CR>") -- move line down visual mode
-map("v", "<A-k>", "<CMD>m-2<CR>") -- move line up visual mode
-map("n", "<C-j>", "10j") -- jump cursor down
-map("n", "<C-k>", "10k") -- jump cursor up
+map("n", "<C-d>", "10j") -- jump cursor down
+map("n", "<C-u>", "10k") -- jump cursor up
