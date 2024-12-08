@@ -179,14 +179,16 @@ alias gwref='cd ~/repositories/world-running-events/frontend'
 alias gwreb='cd ~/repositories/world-running-events/backend'
 alias gnvimh='cd ~/.config/nvim/lua'
 alias gnvimp='cd ~/.config/nvim/lua/plugins'
+alias go='cd ~/obsidian'
 
 # other
 alias vim='nvim'
 alias rpf='source ~/.profile'
 alias rpcc='sudo killall picom; picom &'
 alias venva='source .venv/bin/activate'
-alias rnetman='sudo systemctl restart NetworkManager'
+alias rnm='sudo systemctl restart NetworkManager'
 alias email='neomutt'
+alias zcg='cat ~/.zshrc | grep'
 
 # himalaya email client
 alias h='himalaya'

@@ -110,9 +110,8 @@ myStartupHook = do
         spawnOnce "setxkbmap -layout us,es -option grp:shifts_toggle -variant mac" -- switch keyboard layouts 'us-es' (press both Shift keys at once)
         spawnOnce "nitrogen --restore"
         spawnOnce "thunar --daemon"
-        spawnOnce "rclone mount obsidian-m4rc3iroGdrive: ~/obsidian" -- requires rclone to be installed
-        spawnOnce "rclone mount jobHunting-m4rc3iroGdrive: ~/jobHunting" -- requires rclone to be installed
-        spawnOnce "/usr/bin/greenclip daemon"
+        -- spawnOnce "rclone mount obsidian-m4rc3iroGdrive: ~/obsidian" -- requires rclone to be installed
+        -- spawnOnce "rclone mount jobHunting-m4rc3iroGdrive: ~/jobHunting" -- requires rclone to be installed
         spawnOnce "picom"
         spawnOnce "redshift"
         setWMName "LG3D" -- fixes rendering issues with Java based applications
