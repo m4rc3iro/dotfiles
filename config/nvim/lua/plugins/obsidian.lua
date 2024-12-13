@@ -1,19 +1,57 @@
+local function createNoteWithDefaultTemplate()
+	local TEMPLATE_FILENAME = "default-note"
+	local obsidian = require("obsidian").get_client()
+	local utils = require("obsidian.util")
+
+	-- prevent Obsidian.nvim from injecting it's own frontmatter table
+	obsidian.opts.disable_frontmatter = true
+
+	-- prompt for note title
+	-- @see: borrowed from obsidian.command.new
+	local note
+	local title = utils.input("Enter title or path (optional): ")
+	if not title then
+		return
+	elseif title == "" then
+		title = nil
+	end
+
+	note = obsidian:create_note({ title = title, no_write = true })
+
+	if not note then
+		return
+	end
+	-- open new note in a buffer
+	obsidian:open_note(note, { sync = true })
+	-- NOTE: make sure the template folder is configured in Obsidian.nvim opts
+	obsidian:write_note_to_buffer(note, { template = TEMPLATE_FILENAME })
+	-- hack: delete empty lines before frontmatter; template seems to be injected at line 2
+	vim.api.nvim_buf_set_lines(0, 0, 1, false, {})
+end
+
 return {
 	"epwalsh/obsidian.nvim",
 	version = "*", -- recommended, use latest release instead of latest commit
 	lazy = false,
 	ft = "markdown",
-	-- Replace the above line with this if you only want to load obsidian.nvim for markdown files in your vault:
-	-- event = {
-	--   -- If you want to use the home shortcut '~' here you need to call 'vim.fn.expand'.
-	--   -- E.g. "BufReadPre " .. vim.fn.expand "~" .. "/my-vault/*.md"
-	--   -- refer to `:h file-pattern` for more examples
-	--   "BufReadPre path/to/my-vault/*.md",
-	--   "BufNewFile path/to/my-vault/*.md",
-	-- },
+
 	dependencies = {
 		"nvim-lua/plenary.nvim", -- required
 	},
+
+	init = function()
+		vim.opt.conceallevel = 2
+		--
+		-- convert note to template and remove leading white space
+		vim.keymap.set("n", "<leader>on", ":ObsidianNewFromTemplate<cr>")
+		vim.keymap.set("n", "<leader>ot", ":ObsidianTemplate default-note<cr>")
+		-- vim.keymap.set("n", "<leader>on", createNoteWithDefaultTemplate, { desc = "[N]ew Obsidian [N]ote" })
+		--
+		-- search for files in full vault
+		vim.keymap.set("n", "<leader>os", ':Telescope find_files search_dirs={"/home/mae/obsidian"}<cr>')
+		vim.keymap.set("n", "<leader>og", ':Telescope live_grep search_dirs={"/home/mae/obsidian"}<cr>')
+	end,
+
 	opts = {
 		workspaces = {
 			{
@@ -22,7 +60,7 @@ return {
 			},
 		},
 		-- Optional, if you keep notes in a specific subdirectory of your vault.
-		notes_subdir = "2. Atomic",
+		notes_subdir = "atomic",
 		-- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
 		completion = {
 			-- Set to false to disable completion.
@@ -40,21 +78,8 @@ return {
 				end,
 				opts = { noremap = false, expr = true, buffer = true },
 			},
-			-- -- Toggle check-boxes.
-			-- ["<leader>ch"] = {
-			-- 	action = function()
-			-- 		return require("obsidian").util.toggle_checkbox()
-			-- 	end,
-			-- 	opts = { buffer = true },
-			-- },
-			-- -- Smart action depending on context, either follow link or toggle checkbox.
-			-- ["<cr>"] = {
-			-- 	action = function()
-			-- 		return require("obsidian").util.smart_action()
-			-- 	end,
-			-- 	opts = { buffer = true, expr = true },
-			-- },
 		},
+
 		-- Templates config
 		templates = {
 			folder = "~/obsidian/_templates",
@@ -70,18 +95,12 @@ return {
 		ui = {
 			enable = true, -- set to false to disable all additional syntax features
 			update_debounce = 200, -- update delay after a text change (in milliseconds)
-			-- Define how various check-boxes are displayed
 			checkboxes = {
 				-- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
 				[" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
 				["x"] = { char = "", hl_group = "ObsidianDone" },
 				[">"] = { char = "", hl_group = "ObsidianRightArrow" },
 				["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
-				-- Replace the above with this if you don't have a patched font:
-				-- [" "] = { char = "☐", hl_group = "ObsidianTodo" },
-				-- ["x"] = { char = "✔", hl_group = "ObsidianDone" },
-
-				-- You can also add more custom ones...
 			},
 			external_link_icon = { char = "", hl_group = "ObsidianExtLinkIcon" },
 			-- Replace the above with this if you don't have a patched font:

@@ -179,7 +179,6 @@ alias gwref='cd ~/repositories/world-running-events/frontend'
 alias gwreb='cd ~/repositories/world-running-events/backend'
 alias gnvh='cd ~/.config/nvim/lua'
 alias gnvp='cd ~/.config/nvim/lua/plugins'
-alias go='cd ~/obsidian'
 
 # other
 alias vim='nvim'
@@ -190,10 +189,12 @@ alias rnm='sudo systemctl restart NetworkManager'
 alias email='neomutt'
 alias zcg='cat ~/.zshrc | grep'
 
-# himalaya email client
-alias h='himalaya'
-alias hr='himalaya read'
-alias hd='himalaya delete'
+# lazygit stuff 
+alias lgd='~/.dotfiles && lazygit'
+
+# obsidian
+alias go='cd ~/obsidian'
+alias on='(){ cd ~/obsidian/inbox && vim $1.md }'
 
 # Load Angular CLI autocompletion.
 #source <(ng completion script)
