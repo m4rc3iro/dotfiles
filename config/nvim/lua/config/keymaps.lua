@@ -37,5 +37,6 @@ map("n", "<C-Up>", "<C-w>+")
 map("n", "<C-Down>", "<C-w>-")
 
 -- Editor
-map("n", "<C-d>", "10j") -- jump cursor down
-map("n", "<C-u>", "10k") -- jump cursor up
+map("n", "<S-d>", "20j") -- jump cursor down
+map("n", "<S-u>", "20k") -- jump cursor up
+map("n", "<C-d>", "d$") -- delete till end of line
