@@ -66,11 +66,11 @@ import qualified Data.Map as M
 myFocusFollowsMouse :: Bool
 
 myModMask = mod4Mask
-myTerminal = "alacritty"
+myTerminal = "kitty"
 myWebBrowser = "thorium-browser"
 --myWebBrowser = "brave"
 myScreensaver = "/usr/bin/slock"
-mySelectScreenshot = "flameshot gui -p ~/Desktop/"
+mySelectScreenshot = "flameshot gui -p ~/Screenshots"
 myLauncher = "rofi -show drun" -- "dmenu_run -p 'Run: '"
 myFileExplorer = "thunar"
 ranger = myTerminal ++ " -t ranger -e ranger"
@@ -92,6 +92,8 @@ xmobarEmptyWSColor = "#cfa881"
 xmobarCurrentWorkspaceColor = "#8fb774"
 myKeybindingsCmd = myTerminal ++ " -e | ~/.xmonad/xmonad_keys.sh &>/dev/null" -- '&>/dev/null' means no shell output
 myWhatsApp = "whatsapp-for-linux"
+myTelegramApp = "telegram-desktop"
+myTelegramAppClassName = "TelegramDesktop" 
 
 intern = "eDP1"
 extern = "HDMI2"
@@ -123,7 +125,9 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                 , NS "ranger" spawnRanger findRanger manageRanger 
                 , NS "bitwarden" spawnBitwarden findBitwarden manageBitwarden 
                 , NS "spotify" spawnSpotify findSpotify manageSpotify 
-                , NS "blueman" spawnBlueman findBlueman manageBlueman ]
+                , NS "blueman" spawnBlueman findBlueman manageBlueman 
+                , NS "telegram" spawnTelegram findTelegram manageTelegram 
+                ]
     where 
         spawnCalc = "galculator" -- "qalculate-gtk"
         findCalc   = className =? "Galculator" -- "Qalculate-gtk"
@@ -170,6 +174,15 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                         t = 0.7 -h 
                         l = 0.7 -w
 
+        spawnTelegram  = myTelegramApp
+        findTelegram   = className =? myTelegramAppClassName
+        manageTelegram = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
+                    where
+                        h = 0.5
+                        w = 0.5
+                        t = 0.7 -h 
+                        l = 0.7 -w
+
 ------------------------------------------------------------------------
 -- Workspaces
 
@@ -192,7 +205,7 @@ myManageHook = composeAll [
     , title =? "ranger" --> viewShift "dir"
     , className =? "Whatsapp-for-linux" --> viewShift "sms"
     , className =? "whatsapp-nativefier-d40211" --> viewShift "sms"
-    , className =? "TelegramDesktop" --> viewShift "sms" 
+    , className =? myTelegramAppClassName --> viewShift "sms" 
     , className =? "discord" --> viewShift "scm" 
     , className =? "Twitter" --> viewShift "scm"
     , className =? "Brave-browser" --> viewShift "www"
@@ -205,9 +218,10 @@ myManageHook = composeAll [
     , className =? "Atomic TweetDeck" --> viewShift "scm"
     -- do float the following apps
     , title =? "Gimp" --> doFloat
+    , title =? "Bitwarden" --> doFloat
     , title =? "File Operation Progress" --> doFloat
     , className =? "Yad" --> doCenterFloat
-    , className =? "TelegramDesktop" --> doFloat
+    , className =? myTelegramAppClassName --> doFloat
     , className =? "VirtualBox" --> doFloat
     , className =? "Xfce-polkit" --> doCenterFloat
     , title =? "Bitwarden" --> doCenterFloat
@@ -353,14 +367,12 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask .|. shiftMask, xK_p), spawn "trello")
   , ((modMask .|. shiftMask, xK_w), spawn "twitter")
   , ((modMask .|. shiftMask, xK_o), spawn myWhatsApp)
-  , ((modMask, xK_o), spawn "telegram-desktop")
   , ((modMask .|. shiftMask, xK_i), spawn "subl")
   -- , ((controlMask.|. shiftMask, xK_c), spawn "clipmenu")
   -- , ((modMask .|. shiftMask, xK_u), spawn "smartgit")
   , ((modMask .|. shiftMask, xK_n), spawn "notion-app-nativefier")
   , ((modMask .|. shiftMask, xK_e), spawn myFileExplorer)
   -- , ((modMask .|. controlMask, xK_m), spawn "geary")
-  , ((modMask .|. controlMask, xK_t), spawn toolboxCmd)
   , ((modMask .|. controlMask, xK_y), spawn systemSettingsCmd)
   , ((modMask .|. controlMask, xK_p), spawn packageManagerUICmd)
   --------------------------------------------------------------------
@@ -384,7 +396,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Layouts key bindings
   , ((modMask, xK_q), kill) -- Kill the currently focused client
   , ((modMask, xK_a), killAll) -- Kill all windows in the current workspace
-  , ((modMask, xK_t), sendMessage $ JumpToLayout "||=")
   , ((modMask .|. shiftMask, xK_t), sendMessage $ JumpToLayout "LLL")
   , ((modMask, xK_m), sendMessage $ JumpToLayout "|M|")
   , ((modMask .|. shiftMask, xK_m), sendMessage Mag.Toggle)
@@ -405,6 +416,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask, xK_c), namedScratchpadAction myScratchPads "calculator")
   , ((modMask, xK_e), namedScratchpadAction myScratchPads "ranger")
   , ((modMask, xK_b), namedScratchpadAction myScratchPads "bitwarden")
+  , ((modMask, xK_t), namedScratchpadAction myScratchPads "telegram")
   , ((modMask .|. shiftMask, xK_g), namedScratchpadAction myScratchPads "spotify")
   , ((modMask .|. controlMask, xK_b), namedScratchpadAction myScratchPads "blueman")
   --------------------------------------------------------------------
