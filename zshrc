@@ -191,6 +191,7 @@ alias zcg='cat ~/.zshrc | grep'
 
 # lazygit stuff 
 alias lgd='~/.dotfiles && lazygit'
+alias lg='lazygit'
 
 # obsidian
 alias go='cd ~/obsidian'

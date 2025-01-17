@@ -125,6 +125,7 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                 , NS "ranger" spawnRanger findRanger manageRanger 
                 , NS "obsidian" spawnObsidian findObsidian manageObsidian 
                 , NS "nvim" spawnNvim findNvim manageNvim 
+                , NS "terminal" spawnTerminal findTerminal manageTerminal 
                 , NS "bitwarden" spawnBitwarden findBitwarden manageBitwarden 
                 , NS "spotify" spawnSpotify findSpotify manageSpotify 
                 , NS "blueman" spawnBlueman findBlueman manageBlueman 
@@ -139,6 +140,15 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                      w = 0.2
                      t = 0.5 -h
                      l = 0.5 -w
+
+        spawnTerminal  = "kitty -T terminal-nsp" 
+        findTerminal   = title =? "terminal-nsp"
+        manageTerminal = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
+                    where
+                        h = 0.7
+                        w = 0.7
+                        t = 0.1
+                        l = 0.15
 
         -- spawnRanger  = "alacritty -t ranger -e ranger"
         spawnRanger  = "kitty -T ranger-nsp -e ranger"
@@ -417,7 +427,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Layouts key bindings
   , ((modMask, xK_q), kill) -- Kill the currently focused client
   , ((modMask, xK_a), killAll) -- Kill all windows in the current workspace
-  , ((modMask .|. shiftMask, xK_t), sendMessage $ JumpToLayout "LLL")
+  -- , ((modMask .|. shiftMask, xK_t), sendMessage $ JumpToLayout "LLL")
   , ((modMask, xK_m), sendMessage $ JumpToLayout "|M|")
   , ((modMask .|. shiftMask, xK_m), sendMessage Mag.Toggle)
   , ((modMask, xK_u), sendMessage $ JumpToLayout "===")
@@ -438,8 +448,9 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   , ((modMask, xK_e), namedScratchpadAction myScratchPads "ranger")
   , ((modMask, xK_o), namedScratchpadAction myScratchPads "obsidian")
   , ((modMask, xK_v), namedScratchpadAction myScratchPads "nvim")
+  , ((modMask, xK_t), namedScratchpadAction myScratchPads "terminal")
   , ((modMask, xK_b), namedScratchpadAction myScratchPads "bitwarden")
-  , ((modMask, xK_t), namedScratchpadAction myScratchPads "telegram")
+  , ((modMask .|. shiftMask, xK_t), namedScratchpadAction myScratchPads "telegram")
   , ((modMask .|. shiftMask, xK_g), namedScratchpadAction myScratchPads "spotify")
   , ((modMask .|. controlMask, xK_b), namedScratchpadAction myScratchPads "blueman")
   --------------------------------------------------------------------
