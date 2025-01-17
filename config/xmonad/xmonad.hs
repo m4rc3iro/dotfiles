@@ -1,4 +1,4 @@
-------------------------------------------------------------------------
+
 -- Imports
 import Control.Monad (liftM2)
 
@@ -73,9 +73,9 @@ myScreensaver = "/usr/bin/slock"
 mySelectScreenshot = "flameshot gui -p ~/Screenshots"
 myLauncher = "rofi -show drun" -- "dmenu_run -p 'Run: '"
 myFileExplorer = "thunar"
-ranger = myTerminal ++ " -t ranger -e ranger"
-neomutt = myTerminal ++ " -t neomutt -e neomutt"
-calendar = myTerminal ++ " -t calendar -e calcurse"
+ranger = myTerminal ++ " ranger -e ranger"
+neomutt = myTerminal ++ " neomutt -e neomutt"
+calendar = myTerminal ++ " calendar -e calcurse"
 toolboxCmd = myTerminal ++ " -e bmenu"
 systemSettingsCmd = myTerminal ++ " -e system-settings"
 packageManagerUICmd = myTerminal ++ " -e pacui"
@@ -123,6 +123,8 @@ myStartupHook = do
 myScratchPads :: [NamedScratchpad]
 myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc 
                 , NS "ranger" spawnRanger findRanger manageRanger 
+                , NS "obsidian" spawnObsidian findObsidian manageObsidian 
+                , NS "nvim" spawnNvim findNvim manageNvim 
                 , NS "bitwarden" spawnBitwarden findBitwarden manageBitwarden 
                 , NS "spotify" spawnSpotify findSpotify manageSpotify 
                 , NS "blueman" spawnBlueman findBlueman manageBlueman 
@@ -138,14 +140,33 @@ myScratchPads = [ NS "calculator" spawnCalc findCalc manageCalc
                      t = 0.5 -h
                      l = 0.5 -w
 
-        spawnRanger  = myTerminal ++ " -t ranger-nsp -e ranger"
+        -- spawnRanger  = "alacritty -t ranger -e ranger"
+        spawnRanger  = "kitty -T ranger-nsp -e ranger"
         findRanger   = title =? "ranger-nsp"
         manageRanger = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
                     where
-                        h = 0.5
-                        w = 0.5
-                        t = 0.7 -h 
-                        l = 0.7 -w
+                        h = 0.7
+                        w = 0.7
+                        t = 0.1
+                        l = 0.15
+        
+        spawnObsidian  = "kitty -T obsidian-nsp -d ~/obsidian -e nvim"
+        findObsidian   = title =? "obsidian-nsp"
+        manageObsidian = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
+                    where
+                        h = 0.7
+                        w = 0.7
+                        t = 0.1
+                        l = 0.15
+
+        spawnNvim  = "kitty -T nvim-nsp -d ~/ -e nvim"
+        findNvim   = title =? "nvim-nsp"
+        manageNvim = customFloating $ W.RationalRect l t w h -- h:heigh,w:width,t:latitud,l:longitud
+                    where
+                        h = 0.7
+                        w = 0.7
+                        t = 0.1
+                        l = 0.15
         
         spawnBitwarden  = "bitwarden-desktop" 
         findBitwarden   = title =? "Bitwarden"
@@ -364,7 +385,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- , ((modMask, xK_b), spawn "Bitwarden") -- launch default browser
   -- , ((modMask .|. shiftMask, xK_m), spawn neomutt)
   , ((modMask .|. shiftMask, xK_c), spawn "rofi -modi \"clipboard:greenclip print\" -show clipboard -run-command '{cmd}'")
-  , ((modMask .|. shiftMask, xK_p), spawn "trello")
+  , ((modMask .|. shiftMask, xK_p), spawn "Trello Desktop")
   , ((modMask .|. shiftMask, xK_w), spawn "twitter")
   , ((modMask .|. shiftMask, xK_o), spawn myWhatsApp)
   , ((modMask .|. shiftMask, xK_i), spawn "subl")
@@ -415,6 +436,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- Scratchpads 
   , ((modMask, xK_c), namedScratchpadAction myScratchPads "calculator")
   , ((modMask, xK_e), namedScratchpadAction myScratchPads "ranger")
+  , ((modMask, xK_o), namedScratchpadAction myScratchPads "obsidian")
+  , ((modMask, xK_v), namedScratchpadAction myScratchPads "nvim")
   , ((modMask, xK_b), namedScratchpadAction myScratchPads "bitwarden")
   , ((modMask, xK_t), namedScratchpadAction myScratchPads "telegram")
   , ((modMask .|. shiftMask, xK_g), namedScratchpadAction myScratchPads "spotify")
@@ -423,7 +446,7 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
   -- "Standard" xmonad key bindings
   -- Resize viewed windows to the correct size.
   -- , ((modMask, xK_r), refresh)
-  , ((modMask, xK_Tab), windows W.focusDown) -- Move focus to the next window
+  , ((modMask .|. shiftMask, xK_Tab), windows W.focusDown) -- Move focus to the next window
   , ((modMask, xK_j), windows W.focusDown) -- Move focus to the next window
   , ((modMask, xK_Down), windows W.focusDown)
   , ((modMask, xK_k), windows W.focusUp) -- Move focus to the previous window

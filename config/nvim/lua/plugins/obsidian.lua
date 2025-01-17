@@ -1,34 +1,3 @@
-local function createNoteWithDefaultTemplate()
-	local TEMPLATE_FILENAME = "default-note"
-	local obsidian = require("obsidian").get_client()
-	local utils = require("obsidian.util")
-
-	-- prevent Obsidian.nvim from injecting it's own frontmatter table
-	obsidian.opts.disable_frontmatter = true
-
-	-- prompt for note title
-	-- @see: borrowed from obsidian.command.new
-	local note
-	local title = utils.input("Enter title or path (optional): ")
-	if not title then
-		return
-	elseif title == "" then
-		title = nil
-	end
-
-	note = obsidian:create_note({ title = title, no_write = true })
-
-	if not note then
-		return
-	end
-	-- open new note in a buffer
-	obsidian:open_note(note, { sync = true })
-	-- NOTE: make sure the template folder is configured in Obsidian.nvim opts
-	obsidian:write_note_to_buffer(note, { template = TEMPLATE_FILENAME })
-	-- hack: delete empty lines before frontmatter; template seems to be injected at line 2
-	vim.api.nvim_buf_set_lines(0, 0, 1, false, {})
-end
-
 return {
 	"epwalsh/obsidian.nvim",
 	version = "*", -- recommended, use latest release instead of latest commit
@@ -48,8 +17,8 @@ return {
 		-- vim.keymap.set("n", "<leader>on", createNoteWithDefaultTemplate, { desc = "[N]ew Obsidian [N]ote" })
 		--
 		-- search for files in full vault
-		vim.keymap.set("n", "<leader>os", ':Telescope find_files search_dirs={"/home/mae/obsidian"}<cr>')
-		vim.keymap.set("n", "<leader>og", ':Telescope live_grep search_dirs={"/home/mae/obsidian"}<cr>')
+		-- vim.keymap.set("n", "<leader>os", ':Telescope find_files search_dirs={"/home/mae/obsidian"}<cr>')
+		-- vim.keymap.set("n", "<leader>og", ':Telescope live_grep search_dirs={"/home/mae/obsidian"}<cr>')
 	end,
 
 	opts = {
@@ -60,7 +29,7 @@ return {
 			},
 		},
 		-- Optional, if you keep notes in a specific subdirectory of your vault.
-		notes_subdir = "atomic",
+		notes_subdir = "inbox",
 		-- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
 		completion = {
 			-- Set to false to disable completion.
@@ -120,5 +89,22 @@ return {
 				ObsidianHighlightText = { bg = "#75662e" },
 			},
 		},
+		note_id_func = function(title)
+			-- Create note IDs in a Zettelkasten format with a timestamp and a suffix.
+			-- In this case a note with the title 'My new note' will be given an ID that looks
+			-- like '1657296016-my-new-note', and therefore the file name '1657296016-my-new-note.md'
+			local suffix = ""
+			if title ~= nil then
+				-- If title is given, transform it into valid file name.
+				suffix = title:gsub(" ", "-"):gsub("[^A-Za-z0-9-]", ""):lower()
+			else
+				-- If title is nil, just add 4 random uppercase letters to the suffix.
+				for _ = 1, 4 do
+					suffix = suffix .. string.char(math.random(65, 90))
+				end
+			end
+			-- return tostring(os.time()) .. "-" .. suffix
+			return title
+		end,
 	},
 }

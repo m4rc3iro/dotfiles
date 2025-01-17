@@ -40,3 +40,17 @@ map("n", "<C-Down>", "<C-w>-")
 map("n", "<S-d>", "20j") -- jump cursor down
 map("n", "<S-u>", "20k") -- jump cursor up
 map("n", "<C-d>", "d$") -- delete till end of line
+
+-- Searches
+map("n", "<leader>os", ':Telescope find_files search_dirs={"/home/mae/obsidian"}<cr>')
+map("n", "<leader>og", ':Telescope live_grep search_dirs={"/home/mae/obsidian"}<cr>')
+map(
+	"n",
+	"<leader>vs",
+	':Telescope find_files search_dirs={"/home/mae/.config/nvim","/home/mae/.dotfiles/config/nvim"}<cr>'
+)
+map(
+	"n",
+	"<leader>vg",
+	':Telescope live_grep search_dirs={"/home/mae/.config/nvim","/home/mae/.dotfiles/config/nvim"}<cr>'
+)
