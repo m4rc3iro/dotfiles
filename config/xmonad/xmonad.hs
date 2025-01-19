@@ -339,7 +339,7 @@ myTabs = named "TTT"
         $ mySpacing mySpacingWidth 
         $ tabbed shrinkText myTabConfig
   where
-    myTabConfig = def { fontName            = "xft:FreeMono:size=9:antialias=true:hinting=true"
+    myTabConfig = def { fontName            = "xft:FreeMono:size=7:antialias=true:hinting=true"
                       , activeColor         = "#282828"
                       , inactiveColor       = "#282828" -- "#3e445e"
                       , activeBorderColor   = myFocusedBorderColor
