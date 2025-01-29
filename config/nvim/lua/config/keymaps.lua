@@ -54,3 +54,9 @@ map(
 	"<leader>vg",
 	':Telescope live_grep search_dirs={"/home/mae/.config/nvim","/home/mae/.dotfiles/config/nvim"}<cr>'
 )
+
+map("n", "<F8>", ":DapStepInto<cr>")
+map("n", "<F9>", ":DapStepOver<cr>")
+map("n", "<F10>", ":DapStepOut<cr>")
+map("n", "<F11>", ":DapContinue<cr>")
+map("n", "<F12>", ":DapTerminate<cr>")

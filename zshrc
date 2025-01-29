@@ -186,7 +186,7 @@ alias rpf='source ~/.profile'
 alias rpcc='sudo killall picom; picom &'
 alias venva='source .venv/bin/activate'
 alias rnm='sudo systemctl restart NetworkManager'
-alias email='neomutt'
+alias mail='neomutt'
 alias zcg='cat ~/.zshrc | grep'
 
 # lazygit stuff 
