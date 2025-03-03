@@ -17,8 +17,8 @@ return {
 		-- vim.keymap.set("n", "<leader>on", createNoteWithDefaultTemplate, { desc = "[N]ew Obsidian [N]ote" })
 		--
 		-- search for files in full vault
-		-- vim.keymap.set("n", "<leader>os", ':Telescope find_files search_dirs={"/home/mae/obsidian"}<cr>')
-		-- vim.keymap.set("n", "<leader>og", ':Telescope live_grep search_dirs={"/home/mae/obsidian"}<cr>')
+		-- vim.keymap.set("n", "<leader>os", ':Telescope find_files search_dirs={"/Users/mae/obsidian"}<cr>')
+		-- vim.keymap.set("n", "<leader>og", ':Telescope live_grep search_dirs={"/Users/mae/obsidian"}<cr>')
 	end,
 
 	opts = {
