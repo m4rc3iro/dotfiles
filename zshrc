@@ -8,7 +8,7 @@ export ZSH=$HOME/.oh-my-zsh
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="archcraft"
+ZSH_THEME="awesomepanda"
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME="archcraft"
@@ -168,6 +168,7 @@ alias gpics="cd ~/Pictures"
 alias gdesk="cd ~/Desktop"
 alias gdowns="cd ~/Downloads"
 alias gvids="cd ~/Videos"
+alias gtrad="cd ~/trading"
 alias gdots='cd ~/.dotfiles'
 alias gxh='cd ~/.config/xmonad'
 alias gdwm='cd ~/repositories/suckless/dwm/'
@@ -199,3 +200,6 @@ alias on='(){ cd ~/obsidian/inbox && vim $1.md }'
 
 # Load Angular CLI autocompletion.
 #source <(ng completion script)
+
+# Created by `pipx` on 2025-09-24 11:52:25
+export PATH="$PATH:/Users/mae/.local/bin"
