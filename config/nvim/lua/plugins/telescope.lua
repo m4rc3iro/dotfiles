@@ -12,7 +12,7 @@ return {
   -- change some options
   opts = {
     defaults = {
-      file_ignore_patterns = { "%.git/", "%.DS_Store" },
+      file_ignore_patterns = { "%.git/", "%.DS_Store", "node_modules/" },
       layout_strategy = "horizontal",
       layout_config = {
         prompt_position = "top",

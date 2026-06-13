@@ -134,7 +134,7 @@ alias ga='git add'
 alias gc='git commit -m'
 alias gp='git push origin master'
 
-# 
+# random 
 alias cp="cp -i"                                                # Confirm before overwriting something
 alias df='df -h'                                                # Human-readable sizes
 alias free='free -m'                                            # Show sizes in MB
@@ -142,6 +142,12 @@ alias gitu='git add . && git commit && git push'
 alias history='fc -l -100'
 alias hg='history | grep '
 alias psg='ps -ef | grep '
+
+# vim
+alias etl='vim ~/obsidian/mySecondBrain/inbox/TODO.md'
+alias ett='vim ~/obsidian/mySecondBrain/inbox/TODO:\ Trading.md'
+alias etmts='vim ~/obsidian/mySecondBrain/inbox/TODO:\ Move\ 2\ Spain.md'
+
 
 # paru
 alias upd='paru -Syu'
@@ -155,6 +161,10 @@ alias rzc='source ~/.zshrc'
 alias rze='source ~/.zshenv'
 alias ezc='vim ~/.zshrc'
 alias eze='vim ~/.zshenv'
+
+# claude code
+alias c='claude'
+alias cm='claude-monitor'
 
 # xmonad
 alias exc='vim ~/.config/xmonad/xmonad.hs'
@@ -196,7 +206,7 @@ alias lg='lazygit'
 
 # obsidian
 alias go='cd ~/obsidian'
-alias on='(){ cd ~/obsidian/inbox && vim $1.md }'
+alias on='(){ cd ~/obsidian/mySecondBrain/inbox && vim $1.md }'
 
 # Load Angular CLI autocompletion.
 #source <(ng completion script)

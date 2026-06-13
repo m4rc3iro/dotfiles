@@ -1,4 +1,13 @@
 return {
+  {
+    "folke/which-key.nvim",
+    opts = {
+      spec = {
+        { "<leader>o", group = "obsidian", icon = { icon = vim.fn.nr2char(0xF1781), color = "purple" } },
+      },
+    },
+  },
+  {
   "epwalsh/obsidian.nvim",
   version = "*", -- recommended, use latest release instead of latest commit
   lazy = false,
@@ -106,5 +115,6 @@ return {
       -- return tostring(os.time()) .. "-" .. suffix
       return title
     end,
+  },
   },
 }
