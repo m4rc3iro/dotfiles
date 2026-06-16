@@ -1,10 +1,20 @@
 return {
   {
-    "kylechui/nvim-surround",
+    "nvim-mini/mini.surround",
     version = "*",
     event = "VeryLazy",
     config = function()
-      require("nvim-surround").setup({})
+      require("mini.surround").setup({
+        mappings = {
+          add = "Sa",
+          delete = "Sd",
+          find = "Sf",
+          find_left = "SF",
+          highlight = "Sh",
+          replace = "Sr",
+          update_n_lines = "Sn",
+        },
+      })
     end,
   },
 }
