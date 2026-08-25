@@ -6,10 +6,6 @@ DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMMON_PKGS=(git zsh neovim tmux ranger btop)
 ARCH_PKGS=(xmonad xmonad-contrib picom rofi redshift alacritty)
 AUR_PKGS=(rcm)
-# xmonad-contrib has no plain Debian/Ubuntu package (it's Haskell-library
-# packaged, e.g. libghc-xmonad-contrib-dev, normally pulled in via cabal/stack
-# instead) - left out here, add it if you manage xmonad.hs deps that way.
-DEBIAN_PKGS=(xmonad picom rofi redshift alacritty)
 
 install_macos() {
   if ! command -v brew &>/dev/null; then
@@ -30,8 +26,10 @@ install_arch() {
 }
 
 install_debian() {
+  # No GUI packages here (xmonad/picom/rofi/redshift/alacritty) - that stack
+  # is for the Arch desktop; Debian/Ubuntu boxes in this repo are headless.
   sudo apt-get update
-  sudo apt-get install -y "${COMMON_PKGS[@]}" "${DEBIAN_PKGS[@]}" rcm
+  sudo apt-get install -y "${COMMON_PKGS[@]}" rcm
 }
 
 install_linux() {
