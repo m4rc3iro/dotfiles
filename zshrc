@@ -213,3 +213,4 @@ alias on='(){ cd ~/obsidian/mySecondBrain/inbox && vim $1.md }'
 
 # Created by `pipx` on 2025-09-24 11:52:25
 export PATH="$PATH:/Users/mae/.local/bin"
+export ANTHROPIC_MODEL="claude-opus-4-8"
