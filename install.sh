@@ -4,7 +4,7 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 COMMON_PKGS=(git zsh tmux ranger btop)
-ARCH_PKGS=(xmonad xmonad-contrib picom rofi redshift alacritty)
+ARCH_PKGS=(gcc xmonad xmonad-contrib picom rofi redshift alacritty)
 AUR_PKGS=(rcm)
 
 install_macos() {
@@ -48,7 +48,7 @@ install_debian() {
   # No GUI packages here (xmonad/picom/rofi/redshift/alacritty) - that stack
   # is for the Arch desktop; Debian/Ubuntu boxes in this repo are headless.
   sudo apt-get update
-  sudo apt-get install -y "${COMMON_PKGS[@]}" curl rcm
+  sudo apt-get install -y "${COMMON_PKGS[@]}" curl build-essential rcm
   install_neovim_github
 }
 
