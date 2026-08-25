@@ -28,6 +28,10 @@ install_arch() {
 install_debian() {
   # No GUI packages here (xmonad/picom/rofi/redshift/alacritty) - that stack
   # is for the Arch desktop; Debian/Ubuntu boxes in this repo are headless.
+  # Ubuntu's apt neovim is often too old for lazy.nvim (needs >=0.8.0), so
+  # pull it from the upstream PPA instead of the default repos.
+  sudo apt-get install -y software-properties-common
+  sudo add-apt-repository -y ppa:neovim-ppa/stable
   sudo apt-get update
   sudo apt-get install -y "${COMMON_PKGS[@]}" rcm
 }
