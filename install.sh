@@ -3,7 +3,7 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-COMMON_PKGS=(git zsh neovim tmux ranger btop)
+COMMON_PKGS=(git zsh tmux ranger btop)
 ARCH_PKGS=(xmonad xmonad-contrib picom rofi redshift alacritty)
 AUR_PKGS=(rcm)
 
@@ -12,12 +12,12 @@ install_macos() {
     echo "Homebrew not found. Install it from https://brew.sh first." >&2
     exit 1
   fi
-  brew install "${COMMON_PKGS[@]}" rcm
+  brew install "${COMMON_PKGS[@]}" neovim rcm
   brew install --cask alacritty
 }
 
 install_arch() {
-  sudo pacman -S --needed "${COMMON_PKGS[@]}" "${ARCH_PKGS[@]}"
+  sudo pacman -S --needed "${COMMON_PKGS[@]}" neovim "${ARCH_PKGS[@]}"
   if ! command -v paru &>/dev/null; then
     echo "paru not found. Install an AUR helper, then re-run this script to get: ${AUR_PKGS[*]}" >&2
     exit 1
@@ -25,15 +25,31 @@ install_arch() {
   paru -S --needed "${AUR_PKGS[@]}"
 }
 
+# Ubuntu's apt neovim (and even neovim-ppa/stable, stuck on 0.7.2 for a long
+# time) is too old for lazy.nvim (needs >=0.8.0), so install it straight from
+# the official GitHub release binary instead of any Debian/Ubuntu package.
+install_neovim_github() {
+  local arch
+  case "$(uname -m)" in
+    x86_64) arch=x86_64 ;;
+    aarch64|arm64) arch=arm64 ;;
+    *) echo "No prebuilt neovim binary for architecture: $(uname -m)" >&2; exit 1 ;;
+  esac
+
+  local tarball="/tmp/nvim-linux-${arch}.tar.gz"
+  curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz" -o "$tarball"
+  sudo rm -rf "/opt/nvim-linux-${arch}"
+  sudo tar -xzf "$tarball" -C /opt
+  sudo ln -sf "/opt/nvim-linux-${arch}/bin/nvim" /usr/local/bin/nvim
+  rm "$tarball"
+}
+
 install_debian() {
   # No GUI packages here (xmonad/picom/rofi/redshift/alacritty) - that stack
   # is for the Arch desktop; Debian/Ubuntu boxes in this repo are headless.
-  # Ubuntu's apt neovim is often too old for lazy.nvim (needs >=0.8.0), so
-  # pull it from the upstream PPA instead of the default repos.
-  sudo apt-get install -y software-properties-common
-  sudo add-apt-repository -y ppa:neovim-ppa/stable
   sudo apt-get update
-  sudo apt-get install -y "${COMMON_PKGS[@]}" rcm
+  sudo apt-get install -y "${COMMON_PKGS[@]}" curl rcm
+  install_neovim_github
 }
 
 install_linux() {
