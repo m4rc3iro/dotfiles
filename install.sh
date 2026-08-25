@@ -3,40 +3,49 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-COMMON_PKGS=(git zsh tmux ranger btop)
-ARCH_PKGS=(gcc xmonad xmonad-contrib picom rofi redshift alacritty)
-AUR_PKGS=(rcm)
+MACOS_PKGS=(git zsh tmux ranger btop neovim lazygit rcm)
+MACOS_CASKS=(alacritty)
+
+ARCH_PKGS=(git zsh tmux ranger btop neovim lazygit gcc xmonad xmonad-contrib picom rofi redshift alacritty)
+ARCH_AUR_PKGS=(rcm) # not in the official repos
+
+# Debian/Ubuntu boxes in this repo are headless, so no GUI stack here.
+DEBIAN_PKGS=(git zsh tmux ranger btop curl build-essential rcm)
+DEBIAN_GITHUB_PKGS=(neovim lazygit) # not reliably packaged for apt
+
+detect_arch() {
+  case "$(uname -m)" in
+    x86_64) echo x86_64 ;;
+    aarch64|arm64) echo arm64 ;;
+    *) echo "Unsupported architecture: $(uname -m)" >&2; exit 1 ;;
+  esac
+}
 
 install_macos() {
   if ! command -v brew &>/dev/null; then
     echo "Homebrew not found. Install it from https://brew.sh first." >&2
     exit 1
   fi
-  brew install "${COMMON_PKGS[@]}" neovim rcm
-  brew install --cask alacritty
+  brew install "${MACOS_PKGS[@]}"
+  brew install --cask "${MACOS_CASKS[@]}"
 }
 
 install_arch() {
-  sudo pacman -S --needed "${COMMON_PKGS[@]}" neovim "${ARCH_PKGS[@]}"
+  sudo pacman -S --needed "${ARCH_PKGS[@]}"
   if ! command -v paru &>/dev/null; then
-    echo "paru not found. Install an AUR helper, then re-run this script to get: ${AUR_PKGS[*]}" >&2
+    echo "paru not found. Install an AUR helper, then re-run this script to get: ${ARCH_AUR_PKGS[*]}" >&2
     exit 1
   fi
-  paru -S --needed "${AUR_PKGS[@]}"
+  paru -S --needed "${ARCH_AUR_PKGS[@]}"
 }
 
 # Ubuntu's apt neovim (and even neovim-ppa/stable, stuck on 0.7.2 for a long
 # time) is too old for lazy.nvim (needs >=0.8.0), so install it straight from
 # the official GitHub release binary instead of any Debian/Ubuntu package.
-install_neovim_github() {
-  local arch
-  case "$(uname -m)" in
-    x86_64) arch=x86_64 ;;
-    aarch64|arm64) arch=arm64 ;;
-    *) echo "No prebuilt neovim binary for architecture: $(uname -m)" >&2; exit 1 ;;
-  esac
-
-  local tarball="/tmp/nvim-linux-${arch}.tar.gz"
+install_github_release_neovim() {
+  local arch tarball
+  arch="$(detect_arch)"
+  tarball="/tmp/nvim-linux-${arch}.tar.gz"
   curl -fsSL "https://github.com/neovim/neovim/releases/latest/download/nvim-linux-${arch}.tar.gz" -o "$tarball"
   sudo rm -rf "/opt/nvim-linux-${arch}"
   sudo tar -xzf "$tarball" -C /opt
@@ -44,12 +53,25 @@ install_neovim_github() {
   rm "$tarball"
 }
 
+# lazygit isn't in the default Debian/Ubuntu repos, so install it the same
+# way its own docs recommend: latest GitHub release binary.
+install_github_release_lazygit() {
+  local arch version tarball
+  arch="$(detect_arch)"
+  version="$(curl -fsSL https://api.github.com/repos/jesseduffield/lazygit/releases/latest | grep -Po '"tag_name": "v\K[^"]*')"
+  tarball="/tmp/lazygit.tar.gz"
+  curl -fsSL "https://github.com/jesseduffield/lazygit/releases/download/v${version}/lazygit_${version}_Linux_${arch}.tar.gz" -o "$tarball"
+  tar -xzf "$tarball" -C /tmp lazygit
+  sudo install /tmp/lazygit /usr/local/bin/lazygit
+  rm "$tarball" /tmp/lazygit
+}
+
 install_debian() {
-  # No GUI packages here (xmonad/picom/rofi/redshift/alacritty) - that stack
-  # is for the Arch desktop; Debian/Ubuntu boxes in this repo are headless.
   sudo apt-get update
-  sudo apt-get install -y "${COMMON_PKGS[@]}" curl build-essential rcm
-  install_neovim_github
+  sudo apt-get install -y "${DEBIAN_PKGS[@]}"
+  for pkg in "${DEBIAN_GITHUB_PKGS[@]}"; do
+    "install_github_release_${pkg}"
+  done
 }
 
 install_linux() {
