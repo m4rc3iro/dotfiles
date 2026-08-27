@@ -189,6 +189,10 @@ alias gttb='cd ~/repositories/telegram-trading-bot'
 alias gnvh='cd ~/.config/nvim/lua'
 alias gnvp='cd ~/.config/nvim/lua/plugins'
 
+# ssh aliases
+alias sshts='ssh ubuntu@92.5.86.46'
+alias sshots='ssh ubuntu@89.168.120.89'
+
 # other
 alias vim='nvim'
 alias sudo='sudo '
