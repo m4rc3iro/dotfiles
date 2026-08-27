@@ -158,7 +158,9 @@ alias rzc='source ~/.zshrc'
 alias rze='source ~/.zshenv'
 alias ezc='vim ~/.zshrc'
 alias eze='vim ~/.zshenv'
-
+alias ehc='vim ~/.config/herdr/config.toml'
+alias ehc='vim ~/.config/herdr/config.toml'
+     
 # claude code
 alias c='claude'
 alias cm='claude-monitor'
