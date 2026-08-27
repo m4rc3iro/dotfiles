@@ -3,15 +3,16 @@ set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-MACOS_PKGS=(git zsh tmux ranger btop neovim lazygit rcm)
+MACOS_PKGS=(git zsh tmux ranger btop neovim lazygit rcm herdr)
 MACOS_CASKS=(alacritty)
 
 ARCH_PKGS=(git zsh tmux ranger btop neovim lazygit gcc xmonad xmonad-contrib picom rofi redshift alacritty)
 ARCH_AUR_PKGS=(rcm) # not in the official repos
+ARCH_GITHUB_PKGS=(herdr) # not packaged for pacman/AUR
 
 # Debian/Ubuntu boxes in this repo are headless, so no GUI stack here.
 DEBIAN_PKGS=(git zsh tmux ranger btop curl build-essential rcm)
-DEBIAN_GITHUB_PKGS=(neovim lazygit) # not reliably packaged for apt
+DEBIAN_GITHUB_PKGS=(neovim lazygit herdr) # not reliably packaged for apt
 
 detect_arch() {
   case "$(uname -m)" in
@@ -37,6 +38,9 @@ install_arch() {
     exit 1
   fi
   paru -S --needed "${ARCH_AUR_PKGS[@]}"
+  for pkg in "${ARCH_GITHUB_PKGS[@]}"; do
+    "install_github_release_${pkg}"
+  done
 }
 
 # Ubuntu's apt neovim (and even neovim-ppa/stable, stuck on 0.7.2 for a long
@@ -64,6 +68,20 @@ install_github_release_lazygit() {
   tar -xzf "$tarball" -C /tmp lazygit
   sudo install /tmp/lazygit /usr/local/bin/lazygit
   rm "$tarball" /tmp/lazygit
+}
+
+# herdr isn't packaged for pacman, AUR, or apt, so install the prebuilt
+# binary straight from its GitHub releases (same approach as lazygit above).
+install_github_release_herdr() {
+  local arch
+  case "$(uname -m)" in
+    x86_64) arch=x86_64 ;;
+    aarch64) arch=aarch64 ;;
+    *) echo "Unsupported architecture for herdr: $(uname -m)" >&2; exit 1 ;;
+  esac
+  curl -fsSL "https://github.com/herdrdev/herdr/releases/latest/download/herdr-linux-${arch}" -o /tmp/herdr
+  sudo install -m 755 /tmp/herdr /usr/local/bin/herdr
+  rm /tmp/herdr
 }
 
 install_debian() {
