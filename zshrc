@@ -147,11 +147,11 @@ alias etmts='vim ~/obsidian/mySecondBrain/inbox/TODO:\ Move\ 2\ Spain.md'
 
 
 # paru
-alias upd='paru -Syu'
-alias pi='paru -S'
-alias pr='paru -Rs'
-alias psr='paru -Ss'
-alias psl='paru -Qs'
+#alias upd='paru -Syu'
+#alias pi='paru -S'
+#alias pr='paru -Rs'
+#alias psr='paru -Ss'
+#alias psl='paru -Qs'
 
 # zsh
 alias rzc='source ~/.zshrc'
@@ -195,7 +195,7 @@ alias gnvp='cd ~/.config/nvim/lua/plugins'
 alias sshts='ssh ubuntu@92.5.86.46'
 alias sshots='ssh ubuntu@89.168.120.89'
 
-# other
+# others
 alias vim='nvim'
 alias sudo='sudo '
 alias rpf='source ~/.profile'
@@ -204,6 +204,8 @@ alias venva='source .venv/bin/activate'
 alias rnm='sudo systemctl restart NetworkManager'
 alias mail='neomutt'
 alias zcg='cat ~/.zshrc | grep'
+alias scptses='scp ubuntu@92.5.86.46:trading-data/executioner/signals.jsonl .'
+alias mail='aerc'
 
 # lazygit stuff 
 alias lgd='~/.dotfiles && lazygit'
@@ -218,4 +220,4 @@ alias on='(){ cd ~/obsidian/mySecondBrain/inbox && vim $1.md }'
 
 # Created by `pipx` on 2025-09-24 11:52:25
 export PATH="$PATH:/Users/mae/.local/bin"
-export ANTHROPIC_MODEL="claude-opus-4-8"
+export ANTHROPIC_MODEL="claude-opus-5-5"
