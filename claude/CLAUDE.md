@@ -41,7 +41,7 @@ Superpowers is the spine; Matt's skills plug into specific stages. One feature b
 2. **Spec → plan → build** — `writing-plans` → `subagent-driven-development`. Never use Matt's to-spec / to-tickets / implement / triage / wayfinder.
 3. **TDD** — superpowers `test-driven-development` for the discipline + Matt's `tdd` for test quality; agree the seams in the plan, not mid-run.
 4. **Bugs** — Matt's `diagnosing-bugs` (build a red-capable repro command first; never Playwright), keeping superpowers' no-fix-without-root-cause rule.
-5. **Review** — per-task reviews as SDD runs them; at branch end, Matt's `code-review` against the spec, then `finishing-a-development-branch`.
+5. **Review** — per-task reviews as SDD runs them; at branch end, Matt's `code-review` against the spec **plus** a branch-level correctness + security pass (superpowers `requesting-code-review` reviewer, most capable model; Matt's two axes don't hunt bugs or security), then `finishing-a-development-branch`.
 6. **Retro (sprint close)** — after the merge, offer `/retro` on the controller session. Present the improvements ranked; I pick which to keep. Land accepted items on a separate `chore/` branch, never the feature branch. Prefer an automated check (lint rule, hook, CI job, guard test) over a new CLAUDE.md line.
 - **Decisions** — a hard-to-reverse decision with a real trade-off becomes an ADR (`domain-modeling`), not prose in CLAUDE.md.
 
