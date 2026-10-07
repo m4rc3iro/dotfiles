@@ -31,7 +31,8 @@ Turn tasks into verifiable goals ("fix the bug" → "write a test that reproduce
 ## Superpowers model routing
 
 - Controller (the session driving `subagent-driven-development` / `executing-plans`): Opus 5.5 (`claude-opus-5-5`).
-- All other roles (implementers, reviewers) follow the skill's Model Selection.
+- Implementers: always the `kimi-implementer` agent (Kimi K3), for every implementation dispatch including fix rounds. Never a Claude model (haiku/sonnet/opus) as implementer.
+- Reviewers follow the skill's Model Selection.
 
 ## Skill routing (superpowers + mattpocock)
 
@@ -47,5 +48,6 @@ Superpowers is the spine; Matt's skills plug into specific stages. One feature b
 
 ## Git
 
+- Merging a feature branch with more than one commit: always `git merge --no-ff` (a merge commit), never fast-forward.
 - Do not commit or push on my behalf without an explicit request — I commit when ready, except when working on long feature developments which use sub-agent driven development and branch git history is important to track individual task's changes.
 - End commit messages with a `Co-Authored-By` trailer for the assisting model when committing on my request.
