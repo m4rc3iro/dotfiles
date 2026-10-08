@@ -22,6 +22,9 @@ Touch only what you must; clean up only your own mess. Don't "improve" adjacent 
 ### 4. Goal-driven execution
 Turn tasks into verifiable goals ("fix the bug" → "write a test that reproduces it, then make it pass"). For multi-step work, state a brief plan with a verify step for each.
 
+### 5. Idiomatic project structure
+Follow the established conventions of each language and framework (e.g. Next.js `src/app` · `src/components` · `src/lib`, Maven `src/main/java`, Python `src/<package>`), never transplant one ecosystem's layout into another. Group a feature's code in one folder within that convention. When I question a structure, explain what the ecosystem's norm is before proposing changes.
+
 ## Docs & files
 
 - **Keep `CLAUDE.md` lean (under ~500 lines): conventions, locked decisions, and open/active tasks only.** Migrate closed/tested/rejected experiments, superseded plans, and long status history to a separate **archive file in the same repo** (e.g. `Technical Archive.md`), keeping a one-line summary per closed item in CLAUDE.md that points to it. Prefer references over inlined content; preserve item numbering across both files so cross-references still resolve. Re-slim proactively when it drifts back over ~500 lines — don't wait to be asked. Don't stuff repo technical detail into personal-notes / "second brain" files; those are a business/vision layer that delegates technical detail to the repo.
