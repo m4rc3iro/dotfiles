@@ -37,7 +37,7 @@ return {
       },
     },
     -- Optional, if you keep notes in a specific subdirectory of your vault.
-    notes_subdir = "inbox",
+    notes_subdir = "home",
     -- Optional, completion of wiki links, local markdown links, and tags using nvim-cmp.
     completion = {
       -- Set to false to disable completion.

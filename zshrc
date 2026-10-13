@@ -141,9 +141,9 @@ alias hg='history | grep '
 alias psg='ps -ef | grep '
 
 # vim
-alias etl='vim ~/obsidian/mySecondBrain/inbox/TODO.md'
-alias ett='vim ~/obsidian/mySecondBrain/inbox/TODO:\ Trading.md'
-alias etmts='vim ~/obsidian/mySecondBrain/inbox/TODO:\ Move\ 2\ Spain.md'
+alias etl='vim ~/obsidian/mySecondBrain/home/TODO.md'
+alias ett='vim ~/obsidian/mySecondBrain/home/TODO\ -\ Trading.md'
+alias etmts='vim ~/obsidian/mySecondBrain/home/TODO\ -\ Move\ 2\ Spain.md'
 
 
 # paru
@@ -213,7 +213,7 @@ alias lg='lazygit'
 
 # obsidian
 alias go='cd ~/obsidian'
-alias on='(){ cd ~/obsidian/mySecondBrain/inbox && vim $1.md }'
+alias on='(){ cd ~/obsidian/mySecondBrain/home && vim $1.md }'
 
 # Load Angular CLI autocompletion.
 #source <(ng completion script)
