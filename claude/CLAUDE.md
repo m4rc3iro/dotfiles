@@ -47,7 +47,7 @@ Follow the established conventions of each language and framework (e.g. Next.js 
 Superpowers is the spine; Matt's skills plug into specific stages. One feature branch = one sprint.
 
 1. **Shape** — `brainstorming` is the gate, but ask in `grilling`'s round format (numbered questions, each with a recommended answer). A design question that can't be settled on paper → `prototype` first.
-2. **Spec → plan → build** — `writing-plans` → `subagent-driven-development`. Never use Matt's to-spec / to-tickets / implement / triage / wayfinder.
+2. **Spec → grill → plan → build** — once the spec is written, run `grilling` on it with me until its frontier is empty, then `writing-plans` → `subagent-driven-development`. Never use Matt's to-spec / to-tickets / implement / triage / wayfinder.
 3. **TDD** — superpowers `test-driven-development` for the discipline + Matt's `tdd` for test quality; agree the seams in the plan, not mid-run.
 4. **Bugs** — Matt's `diagnosing-bugs` (build a red-capable repro command first; never Playwright), keeping superpowers' no-fix-without-root-cause rule.
 5. **Review** — per-task reviews as SDD runs them; at branch end, Matt's `code-review` against the spec **plus** a branch-level correctness + security pass (superpowers `requesting-code-review` reviewer, most capable model; Matt's two axes don't hunt bugs or security), then `finishing-a-development-branch`.
@@ -57,5 +57,6 @@ Superpowers is the spine; Matt's skills plug into specific stages. One feature b
 ## Git
 
 - Merging a feature branch with more than one commit: always `git merge --no-ff` (a merge commit), never fast-forward.
+- Long-running feature work (anything run through `subagent-driven-development`) gets its own git worktree, so parallel sessions never share a checkout. After the feature is merged into master, remove the worktree (`git worktree remove`) and delete the branch.
 - Do not commit or push on my behalf without an explicit request — I commit when ready, except when working on long feature developments which use sub-agent driven development and branch git history is important to track individual task's changes.
 - End commit messages with a `Co-Authored-By` trailer for the assisting model when committing on my request.
