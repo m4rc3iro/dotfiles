@@ -35,11 +35,10 @@ Follow the established conventions of each language and framework (e.g. Next.js 
 
 - Controller (the session driving `subagent-driven-development` / `executing-plans`): Opus 5.5 (`claude-opus-5-5`).
 - Implementers, a fallback chain for every implementation dispatch including fix rounds:
-  1. `kimi-implementer` (Kimi K3 via OpenCode) — the default.
-  2. `openai-implementer` (GPT-6.1-Sol via Codex) — only when Kimi reports its usage limit is reached.
-  3. A `general-purpose` agent on `model: sonnet` (Sonnet 5.5) — only when OpenAI's quota is exhausted too.
-  Each switch is triggered by a quota/usage-limit report, not by a failed task; tell me when the chain moves down, and move back up as soon as the higher tier has quota again. Never Haiku or Opus as implementer.
-- **Prove the external model ran** on every Kimi/OpenAI dispatch: a fresh Kimi log or OpenCode session, or the Codex log's `model: gpt-6.1-sol` + `session id` (ask the relay for it). A Haiku relay can quietly do the work itself. No proof → block implementation and tell me; that is not a quota report, so it does not move the chain down on its own.
+  1. `openai-implementer` (GPT-6.1-Sol via Codex) — the default.
+  2. A `general-purpose` agent on `model: sonnet` (Sonnet 5.5) — only when OpenAI reports its usage limit is reached.
+  The switch is triggered by a quota/usage-limit report, not by a failed task; tell me when the chain moves down, and move back up as soon as OpenAI has quota again. Never Haiku or Opus as implementer. Kimi (`kimi-implementer`) is unavailable — its subscription is cancelled; never dispatch it.
+- **Prove the external model ran** on every OpenAI dispatch: the Codex log's `model: gpt-6.1-sol` + `session id` (ask the relay for it, then check the session file exists under `~/.codex/sessions/`). A Haiku relay can quietly do the work itself. No proof → block implementation and tell me; that is not a quota report, so it does not move the chain down on its own.
 - Reviewers follow the skill's Model Selection.
 
 ## Skill routing (superpowers + mattpocock)

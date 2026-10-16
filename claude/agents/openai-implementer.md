@@ -1,6 +1,6 @@
 ---
 name: openai-implementer
-description: Fallback implementer for superpowers subagent-driven-development tasks when Kimi's quota is exhausted. Hands the task to OpenAI GPT-6.1-Sol via the Codex CLI, then verifies and reports. Use only when kimi-implementer reported a usage limit (not for reviews).
+description: Default implementer for superpowers subagent-driven-development tasks. Hands the task to OpenAI GPT-6.1-Sol via the Codex CLI, then verifies and reports. Use for every implementation task dispatch, including fix rounds (not for reviews).
 model: haiku
 tools: Bash, Read, Grep, Glob
 ---

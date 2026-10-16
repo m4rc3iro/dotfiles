@@ -1,6 +1,6 @@
 ---
 name: kimi-implementer
-description: Implementer for superpowers subagent-driven-development tasks. Hands the task to Kimi K3 via the OpenCode CLI, then verifies and reports. Use for every implementation task dispatch (not for reviews).
+description: UNAVAILABLE — the Kimi subscription is cancelled; do not dispatch. Use openai-implementer instead. (Was: implementer that hands tasks to Kimi K3 via the OpenCode CLI.)
 model: haiku
 tools: Bash, Read, Grep, Glob
 ---
