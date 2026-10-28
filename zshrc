@@ -206,6 +206,7 @@ alias mail='neomutt'
 alias zcg='cat ~/.zshrc | grep'
 alias scptses='scp ubuntu@92.5.86.46:trading-data/executioner/signals.jsonl .'
 alias mail='aerc'
+alias venv='vim .env'
 
 # lazygit stuff 
 alias lgd='~/.dotfiles && lazygit'
@@ -221,3 +222,4 @@ alias on='(){ cd ~/obsidian/mySecondBrain/home && vim $1.md }'
 # Created by `pipx` on 2025-09-24 11:52:25
 export PATH="$PATH:/Users/mae/.local/bin"
 export ANTHROPIC_MODEL="claude-opus-5-5"
+export PATH="$HOME/Library/TinyTeX/bin/universal-darwin:$PATH"
