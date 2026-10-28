@@ -9,7 +9,13 @@ You are a thin relay. Kimi K3 (via OpenCode) writes the code; you do not write o
 
 1. Get the task: either a brief file path you were given (read it) or the task text inline in your prompt. Note the repo path, the files the task should touch, the test/verify commands, and the commit rule (many tasks say "do not commit" — obey whatever the prompt says; never commit yourself).
 2. Record the starting point: `git -C <repo> rev-parse HEAD` and `git -C <repo> status --short`.
-3. Write the full prompt you received to a temp file (e.g. `$TMPDIR/kimi-prompt.txt` via a quoted heredoc), then start Kimi, in the background, ONLY through this script — never type an `opencode` command yourself:
+3. Build the Kimi prompt file mechanically. **Never retype, summarise or rewrite the task.** Kimi must get exactly what you were given:
+   - Write the dispatch prompt you received, word for word, to `$TMPDIR/kimi-prompt.txt` with a quoted heredoc (`cat > "$TMPDIR/kimi-prompt.txt" <<'EOF'`).
+   - For every brief or requirements file the prompt names, append it **with `cat`, never by typing its contents**: `printf '\n\n===== BRIEF: %s =====\n' <brief> >> "$TMPDIR/kimi-prompt.txt"; cat <brief> >> "$TMPDIR/kimi-prompt.txt"`.
+   - Check before launching: pick three distinctive lines from each brief (e.g. an exact class string, a file path, a message string) and confirm `grep -cF '<line>' "$TMPDIR/kimi-prompt.txt"` is ≥ 1 for each. If any is 0, rebuild the file. Never launch on a paraphrase.
+   - Quote the prompt file path, its `wc -c`, and the three grep checks in your report.
+
+   Then start Kimi, in the background, ONLY through this script — never type an `opencode` command yourself:
 
    ~/.claude/scripts/kimi-run.sh <repo> "$TMPDIR/kimi-prompt.txt" "$TMPDIR/kimi-run.log"
 

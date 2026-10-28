@@ -34,11 +34,11 @@ Follow the established conventions of each language and framework (e.g. Next.js 
 ## Superpowers model routing
 
 - Controller (the session driving `subagent-driven-development` / `executing-plans`): Opus 5.5 (`claude-opus-5-5`).
-- Implementers, a fallback chain for every implementation dispatch including fix rounds:
-  1. `openai-implementer` (GPT-6.1-Sol via Codex) — the default.
-  2. A `general-purpose` agent on `model: sonnet` (Sonnet 5.5) — only when OpenAI reports its usage limit is reached.
-  The switch is triggered by a quota/usage-limit report, not by a failed task; tell me when the chain moves down, and move back up as soon as OpenAI has quota again. Never Haiku or Opus as implementer. Kimi (`kimi-implementer`) is unavailable — its subscription is cancelled; never dispatch it.
-- **Prove the external model ran** on every OpenAI dispatch: the Codex log's `model: gpt-6.1-sol` + `session id` (ask the relay for it, then check the session file exists under `~/.codex/sessions/`). A Haiku relay can quietly do the work itself. No proof → block implementation and tell me; that is not a quota report, so it does not move the chain down on its own.
+- Implementers, a fallback chain for every implementation dispatch including fix rounds. No relay agent: the controller runs the script itself.
+  1. `~/.claude/scripts/external-implementer codex <repo> <prompt-file> --verify "<cmd>"... --commit-msg-file <file>` (GPT-6.1-Sol via Codex), via Bash with `run_in_background`, then read its JSON result. The prompt file is controller-written: task text plus the brief, never relay instructions. Pass the repo's checks as `--verify` (unit tests, `test:db` when the DB is touched, lint, one build); the script runs them outside the model's sandbox, serialises builds, and retries once with the failure appended.
+  2. A `general-purpose` agent on `model: sonnet` (Sonnet 5.5) — only when the script reports `BLOCKED_QUOTA` (usage limit reached).
+  The switch is triggered by a quota/usage-limit result, not by a failed task; tell me when the chain moves down, and move back up as soon as OpenAI has quota again. Never Haiku or Opus as implementer. Kimi / OpenCode is unavailable — its subscription is cancelled; never use it. The old relay agents (`openai-implementer`, `kimi-implementer`) are retired; never dispatch them.
+- **Prove the external model ran** on every external dispatch: the script's JSON is the proof (`models` contains `gpt-6.1-sol`, `cwd_ok` true, a `session` id, `strays` empty). `NO_PROOF` → block implementation and tell me; that is not a quota report, so it does not move the chain down on its own. `provenance.unmatched` > 0 means added lines the model's record does not contain: read those lines before accepting. Always read the full diff and tests (they can be weakened to match the code); a `DONE` is not a review.
 - Reviewers follow the skill's Model Selection.
 
 ## Skill routing (superpowers + mattpocock)
@@ -57,5 +57,6 @@ Superpowers is the spine; Matt's skills plug into specific stages. One feature b
 
 - Merging a feature branch with more than one commit: always `git merge --no-ff` (a merge commit), never fast-forward.
 - Long-running feature work (anything run through `subagent-driven-development`) gets its own git worktree, so parallel sessions never share a checkout. After the feature is merged into master, remove the worktree (`git worktree remove`) and delete the branch.
+- A long-running feature branch (anything run through `subagent-driven-development`) merges `master` into itself at the start of every session and after every few tasks, resolving conflicts as they appear and re-running tests before continuing, so it never drifts far from `master`. Never rebase it.
 - Do not commit or push on my behalf without an explicit request — I commit when ready, except when working on long feature developments which use sub-agent driven development and branch git history is important to track individual task's changes.
 - End commit messages with a `Co-Authored-By` trailer for the assisting model when committing on my request.

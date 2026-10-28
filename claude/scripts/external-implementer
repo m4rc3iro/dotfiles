@@ -1,0 +1,203 @@
+#!/usr/bin/env python3
+"""Hand one implementation task to an external coding model (Codex or OpenCode), then prove, verify and commit it.
+
+Replaces the LLM relay agents (openai-implementer / kimi-implementer): everything the relay did by hand, and got wrong,
+is deterministic here. Run it in the foreground or with Bash run_in_background, then read the one JSON result.
+
+  external-implementer <codex|opencode> <repo> <prompt-file>
+      [--verify CMD]...        run in --verify-dir after the model finishes (a command containing "build" takes a global lock)
+      [--verify-dir DIR]       relative to the repo (default: .)
+      [--commit-msg-file FILE] commit with this message when everything passed; omit to leave the work uncommitted
+      [--retries N]            re-run the model once per failed verify, with the failure appended (default 1)
+      [--timeout SEC]          per model run (default 3600)
+      [--out DIR]              artifacts: prompt, log, result.json (default: a temp dir)
+
+Result JSON: status (DONE | DONE_WITH_CONCERNS | NO_CHANGES | VERIFY_FAILED | BLOCKED_QUOTA | NO_PROOF | TIMEOUT | ERROR),
+model, rollout, session, cwd_ok, files, verify[], provenance{added, unmatched, samples}, commit, strays (processes of this run still alive), out_dir.
+Exit 0 only for DONE / DONE_WITH_CONCERNS. The repo must start clean so every change is attributable to the model.
+Proof = the model's own session record contains this run's nonce, the expected model name and the repo as cwd (Codex).
+Provenance = every substantial added line of the diff appears in that record; unmatched lines are listed, not hidden.
+"""
+import argparse, glob, json, os, re, secrets, shutil, subprocess, sys, tempfile, time
+
+BACKENDS = {
+    "codex": {"model": "gpt-6.1-sol",
+              "cmd": lambda p: ["codex", "exec", p, "--model", "gpt-6.1-sol", "-c", "model_reasoning_effort=low", "--sandbox", "workspace-write"]},
+    "opencode": {"model": "k3",
+                 "cmd": lambda p: ["opencode", "run", p, "--model", "kimi-code-plan-global/k3#low"]},
+}
+QUOTA = re.compile(r"usage limit|rate limit|quota|try again (at|in)|limit (is )?reached", re.I)
+LOCK = os.path.expanduser("~/.cache/external-implementer/build.lock")
+NOTE = "\n\n---\nRun id: {nonce}\nDo not run git commit; leave changes uncommitted. Network access is unavailable.\n"
+
+
+def sh(args, cwd, check=False):
+    return subprocess.run(args, cwd=cwd, capture_output=True, text=True, check=check)
+
+
+def tail(text, n=25):
+    return "\n".join(text.strip().splitlines()[-n:])
+
+
+def run_model(backend, repo, prompt, log, timeout):
+    env = os.environ.copy()
+    fake = env.get("EXTERNAL_IMPLEMENTER_TEST") == "1" and backend == "fake"
+    cmd = ["bash", "-c", env["EXTERNAL_IMPLEMENTER_FAKE_CMD"]] if fake else BACKENDS[backend]["cmd"](prompt)
+    with open(log, "ab") as out:
+        try:
+            r = subprocess.run(cmd, cwd=repo, stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT, timeout=timeout, env=env)
+            return r.returncode
+        except subprocess.TimeoutExpired:
+            return "timeout"
+
+
+def find_rollout(nonces, since):
+    for path in sorted(glob.glob(os.path.expanduser("~/.codex/sessions/*/*/*/rollout-*.jsonl")), key=os.path.getmtime, reverse=True):
+        if os.path.getmtime(path) < since - 60:
+            break
+        raw = open(path, errors="ignore").read()
+        if any(n in raw for n in nonces):
+            return path, raw
+    return None, ""
+
+
+def record_text(raws):
+    out = []
+
+    def walk(o):
+        if isinstance(o, str): out.append(o)
+        elif isinstance(o, dict): [walk(v) for v in o.values()]
+        elif isinstance(o, list): [walk(v) for v in o]
+    for raw in raws:
+        for line in raw.splitlines():
+            try: walk(json.loads(line))
+            except ValueError: pass
+    return "\n".join(out)
+
+
+def added_lines(repo, start):
+    lines = [l[1:].strip() for l in sh(["git", "diff", start, "--"], repo).stdout.splitlines() if l.startswith("+") and not l.startswith("+++")]
+    for f in sh(["git", "ls-files", "-o", "--exclude-standard"], repo).stdout.split("\n"):
+        if f:
+            try: lines += [l.strip() for l in open(os.path.join(repo, f), errors="ignore").read().splitlines()]
+            except OSError: pass
+    return [l for l in lines if len(l) > 20]
+
+
+def acquire_build_lock():
+    os.makedirs(os.path.dirname(LOCK), exist_ok=True)
+    deadline = time.time() + 1500
+    while True:
+        try:
+            os.mkdir(LOCK)
+            return
+        except FileExistsError:
+            if time.time() - os.path.getmtime(LOCK) > 1800: shutil.rmtree(LOCK, ignore_errors=True)
+            elif time.time() > deadline: raise RuntimeError("build lock held for 25 minutes")
+            else: time.sleep(5)
+
+
+def verify(cmds, cwd):
+    results = []
+    for cmd in cmds:
+        locked = bool(re.search(r"\bbuild\b", cmd))
+        if locked: acquire_build_lock()
+        try:
+            r = subprocess.run(cmd, shell=True, cwd=cwd, capture_output=True, text=True)
+        finally:
+            if locked: shutil.rmtree(LOCK, ignore_errors=True)
+        results.append({"cmd": cmd, "exit": r.returncode, "tail": tail(r.stdout + r.stderr, 12)})
+        if r.returncode != 0: break
+    return results
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("backend"); ap.add_argument("repo"); ap.add_argument("prompt_file")
+    ap.add_argument("--verify", action="append", default=[]); ap.add_argument("--verify-dir", default=".")
+    ap.add_argument("--commit-msg-file"); ap.add_argument("--retries", type=int, default=1)
+    ap.add_argument("--timeout", type=int, default=3600); ap.add_argument("--out")
+    a = ap.parse_args()
+    repo = os.path.realpath(a.repo)
+    nonces = []
+    out_dir = a.out or tempfile.mkdtemp(prefix="ext-impl-")
+    os.makedirs(out_dir, exist_ok=True)
+    log = os.path.join(out_dir, "run.log")
+    res = {"status": "ERROR", "backend": a.backend, "repo": repo, "out_dir": out_dir, "verify": [], "files": [], "commit": None}
+
+    def finish(status, **extra):
+        res.update(status=status, **extra)
+        strays = sh(["pgrep", "-f", "|".join(nonces)], repo).stdout.split() if nonces else []
+        res["strays"] = [p for p in strays if p not in (str(os.getpid()), str(os.getppid()))]
+        open(os.path.join(out_dir, "result.json"), "w").write(json.dumps(res, indent=2))
+        print(json.dumps(res, indent=2))
+        sys.exit(0 if status in ("DONE", "DONE_WITH_CONCERNS") else 1)
+
+    if a.backend not in BACKENDS and not (a.backend == "fake" and os.environ.get("EXTERNAL_IMPLEMENTER_TEST") == "1"):
+        finish("ERROR", error=f"unknown backend {a.backend}")
+    if not os.path.isfile(a.prompt_file) or os.path.getsize(a.prompt_file) == 0:
+        finish("ERROR", error="prompt file missing or empty")
+    if sh(["git", "status", "--porcelain"], repo).stdout.strip():
+        finish("ERROR", error="repo must start clean so every change is attributable to the model")
+    start = sh(["git", "rev-parse", "HEAD"], repo).stdout.strip()
+    res["start_sha"] = start
+    base_prompt = open(a.prompt_file).read()
+    began, prompt = time.time(), base_prompt
+    expect = BACKENDS.get(a.backend, {}).get("model", "fake")
+
+    for attempt in range(a.retries + 1):
+        nonce = "EXTIMPL-" + secrets.token_hex(6)
+        nonces.append(nonce)
+        text = prompt + NOTE.format(nonce=nonce)
+        open(os.path.join(out_dir, "prompt.txt"), "w").write(text)
+        code = run_model(a.backend, repo, text, log, a.timeout)
+        if code == "timeout":
+            finish("TIMEOUT", error=f"model run exceeded {a.timeout}s")
+        changed = sh(["git", "status", "--porcelain"], repo).stdout.strip()
+        logtail = tail(open(log, errors="ignore").read(), 30)
+        if (code != 0 or not changed) and QUOTA.search(logtail):
+            finish("BLOCKED_QUOTA", error=logtail.splitlines()[-1] if logtail else "")
+        if a.backend == "fake":
+            rollout, raw = None, ""
+        else:
+            rollout, raw = find_rollout(nonces, began) if a.backend == "codex" else (None, open(log, errors="ignore").read())
+            models = sorted(set(re.findall(r'"model":\s*"([^"]*)"', raw)))
+            ok = bool(raw) and (expect in models or expect in raw) and (a.backend != "codex" or repo in raw)
+            res.update(rollout=rollout, models=models, cwd_ok=repo in raw if raw else False,
+                       session=(re.search(r"([0-9a-f-]{36})\.jsonl$", rollout or "") or [None, None])[1])
+            if not ok:
+                finish("NO_PROOF", error="no record of this run with the expected model and repo; do not trust the changes")
+        if not changed:
+            finish("NO_CHANGES", error=tail(open(log, errors="ignore").read(), 8))
+        res["verify"] = verify(a.verify, os.path.join(repo, a.verify_dir))
+        failed = [v for v in res["verify"] if v["exit"] != 0]
+        if not failed:
+            break
+        if attempt < a.retries:
+            prompt = base_prompt + "\n\n---\nYour previous attempt failed verification. Fix it. Failing command and output:\n" + \
+                f"$ {failed[0]['cmd']}\n{failed[0]['tail']}\n"
+    if failed:
+        finish("VERIFY_FAILED", files=sh(["git", "status", "--short"], repo).stdout.split("\n")[:60])
+
+    res["files"] = [l for l in sh(["git", "status", "--short"], repo).stdout.split("\n") if l]
+    mine = added_lines(repo, start)
+    blob = record_text([raw] if raw else [open(log, errors="ignore").read()]) if a.backend != "fake" else None
+    unmatched = [l for l in mine if blob is not None and l not in blob]
+    res["provenance"] = {"added": len(mine), "unmatched": len(unmatched), "samples": [u[:100] for u in unmatched[:5]],
+                         "checked": blob is not None}
+    concerns = []
+    if unmatched: concerns.append(f"{len(unmatched)} added lines not found in the model record: review them")
+    if a.commit_msg_file:
+        sh(["git", "add", "-A"], repo)
+        r = sh(["git", "commit", "-q", "-F", os.path.abspath(a.commit_msg_file)], repo)
+        if r.returncode != 0:
+            finish("ERROR", error="commit failed: " + tail(r.stdout + r.stderr, 6))
+        res["commit"] = sh(["git", "rev-parse", "HEAD"], repo).stdout.strip()
+        if sh(["git", "status", "--porcelain"], repo).stdout.strip():
+            concerns.append("working tree not clean after commit")
+    res["concerns"] = concerns
+    finish("DONE_WITH_CONCERNS" if concerns else "DONE")
+
+
+if __name__ == "__main__":
+    main()
