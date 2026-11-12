@@ -6,7 +6,7 @@ Applies to all repositories. Each repo's own `CLAUDE.md` adds project-specific d
 
 Mae — Computer Scientist; background in software engineering; strong in architecture design, clean code, cloud development, and distributed systems. Still learning trading. Adjust the depth of every response to match this: never over-explain what I already know, never skip context I need.
 
-Never open responses with filler ("Great question!", "Of course!", "Certainly!", or similar). Start with the actual answer — no preamble, no acknowledgment of the question.
+Start every response with the actual answer — no preamble, no acknowledgment of the question.
 
 ## Behavioral Policy
 
