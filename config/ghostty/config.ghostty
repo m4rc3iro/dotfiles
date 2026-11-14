@@ -38,6 +38,7 @@ quick-terminal-size = 100%
 quick-terminal-screen = mouse
 quick-terminal-animation-duration = 0
 quick-terminal-autohide = true
+macos-hidden = always
 
 #
 # # Spacing around the equals sign does not matter.
