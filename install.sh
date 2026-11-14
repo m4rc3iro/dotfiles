@@ -4,7 +4,7 @@ set -euo pipefail
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 MACOS_PKGS=(git zsh tmux ranger btop neovim lazygit rcm herdr)
-MACOS_CASKS=(alacritty)
+MACOS_CASKS=(alacritty ghostty)
 
 ARCH_PKGS=(git zsh tmux ranger btop neovim lazygit gcc xmonad xmonad-contrib picom rofi redshift alacritty)
 ARCH_AUR_PKGS=(rcm) # not in the official repos
