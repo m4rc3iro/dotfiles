@@ -18,6 +18,8 @@ Repos under `/Users/mae/repositories/`:
 | `trading-server` | `Work Items.md` |
 | `trading-dashboard` | `Work Items.md` |
 
+Each repo's `*Livenet Fills.md` logs hold live fill counts and gate state: read their tables' latest rows (fill count vs. the gate's required count).
+
 For each repo also run `git -C <repo> status -sb`; its `[ahead N]` gives unpushed commits (no upstream: say so).
 
 Read each `Work Items.md` in full with the Read tool (`offset`/`limit` chunks; these files exceed 70 KB, and `cat` output gets truncated). A truncated read is not a read. Status lives in a task index table where one exists (Now / Next / Parked), otherwise in section headings and prose ("In flight", "Open", "Parked"). Dates found anywhere (Work Items, fills logs, framework) count; if two sources disagree, report both.
