@@ -27,6 +27,27 @@ def run(repo, fake_cmd, *extra, backend="fake"):
     return p.returncode, (json.loads(p.stdout) if p.stdout.strip().startswith("{") else {"raw": p.stdout + p.stderr})
 
 
+def load_script():
+    from importlib.machinery import SourceFileLoader
+    import importlib.util
+    loader = SourceFileLoader("external_implementer", SCRIPT)
+    spec = importlib.util.spec_from_loader("external_implementer", loader)
+    mod = importlib.util.module_from_spec(spec); loader.exec_module(mod)
+    return mod
+
+
+class Provenance(unittest.TestCase):
+    def test_rewrapped_and_requoted_lines_match(self):
+        m = load_script()
+        blob = 'apply_patch "+it(\\"uses EUR\\", () => {\\n+  | `src/a.ts` |    Purpose here |'
+        mine = ["it('uses EUR', () => {", "| `src/a.ts` | Purpose here |"]
+        self.assertEqual(m.unmatched_lines(mine, blob), [])
+
+    def test_genuinely_foreign_line_still_unmatched(self):
+        m = load_script()
+        self.assertEqual(m.unmatched_lines(["const secret = steal();"], "nothing like it"), ["const secret = steal();"])
+
+
 class Fake(unittest.TestCase):
     def test_success_verifies_and_commits(self):
         repo = make_repo(); msg = os.path.join(repo, "..", "msg.txt"); open(msg, "w").write("feat: add b\n\nCo-Authored-By: X <x@y>\n")
