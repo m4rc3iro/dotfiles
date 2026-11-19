@@ -46,7 +46,7 @@ Follow the established conventions of each language and framework (e.g. Next.js 
 
 Superpowers is the spine; Matt's skills plug into specific stages. One feature branch = one sprint.
 
-1. **Shape** — `brainstorming` is the gate, but ask in `grilling`'s round format (numbered questions, each with a recommended answer). A design question that can't be settled on paper → `prototype` first.
+1. **Shape** — `brainstorming` is the gate, but ask in `grilling`'s round format (numbered questions, each with a recommended answer). A design question that can't be settled on paper → `prototype` first. A change to how the UI behaves (a control that changes type, e.g. a distance select becoming a slider; a choice the user makes, e.g. change this edition vs publish the next) gets a mockup in the repo's `docs/superpowers/mockups/` that I review before the spec is approved.
 2. **Spec → grill → plan → build** — once the spec is written, run `grilling` on it with me until its frontier is empty, then `writing-plans` → `subagent-driven-development`. Never use Matt's to-spec / to-tickets / implement / triage / wayfinder. Before a plan names a field, type or signature, read it in the code: never name one from memory. Before a spec says where a rule applies (every place that shows a distance, a date, a price…), grep for every site that renders that kind of data and list them from the results.
 3. **TDD** — superpowers `test-driven-development` for the discipline + Matt's `tdd` for test quality; agree the seams in the plan, not mid-run.
 4. **Bugs** — Matt's `diagnosing-bugs` (build a red-capable repro command first; never Playwright), keeping superpowers' no-fix-without-root-cause rule.
