@@ -10,6 +10,7 @@ is deterministic here. Run it in the foreground or with Bash run_in_background, 
       [--commit-msg-file FILE] commit with this message when everything passed; omit to leave the work uncommitted
       [--retries N]            re-run the model once per failed verify, with the failure appended (default 1)
       [--timeout SEC]          per model run (default 3600)
+      [--model ID]             override the backend's default model (codex: gpt-6.1-sol); also the model the proof expects
       [--out DIR]              artifacts: prompt, log, result.json (default: a temp dir)
 
 Result JSON: status (DONE | DONE_WITH_CONCERNS | NO_CHANGES | VERIFY_FAILED | BLOCKED_QUOTA | NO_PROOF | TIMEOUT | ERROR),
@@ -22,9 +23,9 @@ import argparse, glob, json, os, re, secrets, shutil, subprocess, sys, tempfile,
 
 BACKENDS = {
     "codex": {"model": "gpt-6.1-sol",
-              "cmd": lambda p: ["codex", "exec", p, "--model", "gpt-6.1-sol", "-c", "model_reasoning_effort=low", "--sandbox", "workspace-write"]},
+              "cmd": lambda p, m: ["codex", "exec", p, "--model", m, "-c", "model_reasoning_effort=low", "--sandbox", "workspace-write"]},
     "opencode": {"model": "k3",
-                 "cmd": lambda p: ["opencode", "run", p, "--model", "kimi-code-plan-global/k3#low"]},
+                 "cmd": lambda p, m: ["opencode", "run", p, "--model", f"kimi-code-plan-global/{m}#low"]},
 }
 QUOTA = re.compile(r"usage limit|rate limit|quota|try again (at|in)|limit (is )?reached", re.I)
 LOCK = os.path.expanduser("~/.cache/external-implementer/build.lock")
@@ -39,10 +40,10 @@ def tail(text, n=25):
     return "\n".join(text.strip().splitlines()[-n:])
 
 
-def run_model(backend, repo, prompt, log, timeout):
+def run_model(backend, model, repo, prompt, log, timeout):
     env = os.environ.copy()
     fake = env.get("EXTERNAL_IMPLEMENTER_TEST") == "1" and backend == "fake"
-    cmd = ["bash", "-c", env["EXTERNAL_IMPLEMENTER_FAKE_CMD"]] if fake else BACKENDS[backend]["cmd"](prompt)
+    cmd = ["bash", "-c", env["EXTERNAL_IMPLEMENTER_FAKE_CMD"]] if fake else BACKENDS[backend]["cmd"](prompt, model)
     with open(log, "ab") as out:
         try:
             r = subprocess.run(cmd, cwd=repo, stdin=subprocess.DEVNULL, stdout=out, stderr=subprocess.STDOUT, timeout=timeout, env=env)
@@ -132,6 +133,7 @@ def main():
     ap.add_argument("--verify", action="append", default=[]); ap.add_argument("--verify-dir", default=".")
     ap.add_argument("--commit-msg-file"); ap.add_argument("--retries", type=int, default=1)
     ap.add_argument("--timeout", type=int, default=3600); ap.add_argument("--out")
+    ap.add_argument("--model")
     a = ap.parse_args()
     repo = os.path.realpath(a.repo)
     nonces = []
@@ -158,14 +160,15 @@ def main():
     res["start_sha"] = start
     base_prompt = open(a.prompt_file).read()
     began, prompt = time.time(), base_prompt
-    expect = BACKENDS.get(a.backend, {}).get("model", "fake")
+    expect = a.model or BACKENDS.get(a.backend, {}).get("model", "fake")
+    res["model"] = expect
 
     for attempt in range(a.retries + 1):
         nonce = "EXTIMPL-" + secrets.token_hex(6)
         nonces.append(nonce)
         text = prompt + NOTE.format(nonce=nonce)
         open(os.path.join(out_dir, "prompt.txt"), "w").write(text)
-        code = run_model(a.backend, repo, text, log, a.timeout)
+        code = run_model(a.backend, expect, repo, text, log, a.timeout)
         if code == "timeout":
             finish("TIMEOUT", error=f"model run exceeded {a.timeout}s")
         changed = sh(["git", "status", "--porcelain"], repo).stdout.strip()
